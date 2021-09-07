@@ -27,19 +27,6 @@ import { baseApi } from "../api/api";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 
-// interface Data {
-//   username: string;
-//   name: string;
-//   adcount: number;
-//   ranking: number;
-//   /*  searchterms:[string]; */
-//   dob: string;
-//   gender: string;
-//   password: string;
-//   location: [number, number];
-//   type: string;
-// }
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -93,13 +80,6 @@ const getHeadCells = (source: DataSource) => {
         label: "Username",
       },
       { id: "name", numeric: false, disablePadding: false, label: "Name" },
-      /* { id: "adcount", numeric: true, disablePadding: false, label: "Ad Count" }, */
-      /*  {
-    id: "ranking",
-    numeric: true,
-    disablePadding: false,
-    label: "Political Ranking",
-  }, */
       { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
       { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
       {
@@ -108,12 +88,6 @@ const getHeadCells = (source: DataSource) => {
         disablePadding: false,
         label: "Password",
       },
-      // {
-      //   id: "location",
-      //   numeric: true,
-      //   disablePadding: false,
-      //   label: "Location",
-      // },
       { id: "type", numeric: false, disablePadding: false, label: "Type" },
     ];
   } else
@@ -259,21 +233,22 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           Bots
         </Typography>
       )}
-      {numSelected > 0 ? (
-        <Link
-          to={{ pathname: "/ads", state: { bots: selected } }}
-          style={{ textDecoration: "none" }}
-        >
-          <Button className={classes.viewAdsButton} color="primary">
-            View ads for selected bots
-          </Button>
-        </Link>
-      ) : null
-      // <Tooltip title="Filter list">
-      //   <IconButton aria-label="filter list">
-      //     <FilterListIcon />
-      //   </IconButton>
-      // </Tooltip>
+      {
+        numSelected > 0 ? (
+          <Link
+            to={{ pathname: "/ads", state: { bots: selected } }}
+            style={{ textDecoration: "none" }}
+          >
+            <Button className={classes.viewAdsButton} color="primary">
+              View ads for selected bots
+            </Button>
+          </Link>
+        ) : null
+        // <Tooltip title="Filter list">
+        //   <IconButton aria-label="filter list">
+        //     <FilterListIcon />
+        //   </IconButton>
+        // </Tooltip>
       }
     </Toolbar>
   );
