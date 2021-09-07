@@ -268,13 +268,13 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
             View ads for selected bots
           </Button>
         </Link>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null
+      // <Tooltip title="Filter list">
+      //   <IconButton aria-label="filter list">
+      //     <FilterListIcon />
+      //   </IconButton>
+      // </Tooltip>
+      }
     </Toolbar>
   );
 };

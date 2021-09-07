@@ -16,20 +16,14 @@ import politicalSearchTerms from "../helpers/politicalSearchTerms";
 import Geocode from "react-geocode";
 
 interface GoogleBotDetailsProps {
-  name: string;
   /**
-   * Political ranking
+   * Controls open state of the dialog
    */
-  ranking: number;
-  /**
-   * Number of other search terms (unique extra search terms for the particular bot)
-   */
-  other: number;
-  gender: string;
-  dob: any;
   open: boolean;
-  long: number;
-  lat: number;
+  /**
+   * The bot to display details for
+   */
+  bot: GoogleBot;
   /**
    * Handles closing the bot details dialog
    */
@@ -44,17 +38,18 @@ interface GoogleBotDetailsProps {
  * Displays details for bots
  */
 export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
-  let ranking: string = politicalRanking[`${props.ranking}`];
+  const { open, bot, handleClose, displayTerms } = props;
+  let ranking: string = politicalRanking[`${bot.politicalRanking}`];
   const [location, setLocation] = React.useState("");
 
-  if (!props.open) {
+  if (!open) {
     return <div />;
   }
 
   // This API key has been here for a while which isn't great
   Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
 
-  Geocode.fromLatLng(props.lat.toString(), props.long.toString()).then(
+  Geocode.fromLatLng(bot.locLat.toString(), bot.locLong.toString()).then(
     (response: { results: { formatted_address: any }[] }) => {
       const address = response.results[0].formatted_address;
       setLocation(address);
@@ -65,9 +60,9 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
   );
   return (
     <Dialog
-      onClose={props.handleClose}
+      onClose={handleClose}
       aria-labelledby="simple-dialog-title"
-      open={props.open}
+      open={open}
     >
       <DialogTitle
         id="simple-dialog-title"
@@ -82,7 +77,7 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
             fontWeight: "bold",
           }}
         >
-          {props.name}
+          {bot.fName + " " + bot.lName}
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -125,8 +120,8 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
                   size="small"
                   variant="outlined"
                   onClick={() => {
-                    props.displayTerms(
-                      politicalSearchTerms[`${props.ranking}`],
+                    displayTerms(
+                      politicalSearchTerms[`${bot.politicalRanking}`],
                       "Political Search Terms"
                     );
                   }}
@@ -146,8 +141,8 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
                   size="small"
                   variant="outlined"
                   onClick={() => {
-                    props.displayTerms(
-                      otherSearchTerms[`${props.other}`],
+                    displayTerms(
+                      otherSearchTerms[`${bot.otherTermsCategory}`],
                       "Other Search Terms"
                     );
                   }}
@@ -163,12 +158,12 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
                 <Typography>Gender: </Typography>
               </Grid>
               <Grid item xs={5}>
-                <span>{props.gender}</span>
-                {props.gender === "Female" ? (
+                <span>{bot.gender}</span>
+                {bot.gender === "Female" ? (
                   <span style={{ fontSize: 17, color: "#e449ac" }}>
                     &#9792;
                   </span>
-                ) : props.gender === "Male" ? (
+                ) : bot.gender === "Male" ? (
                   <span style={{ fontSize: 17, color: "#4968e4" }}>
                     &#9794;
                   </span>
@@ -186,7 +181,7 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
                 <Typography> Age: </Typography>
               </Grid>
               <Grid item xs={5}>
-                <Typography>{moment().diff(props.dob, "years")}</Typography>
+                <Typography>{moment().diff(bot.dob, "years")}</Typography>
               </Grid>
             </Grid>
           </ListItem>
@@ -208,7 +203,6 @@ export const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
 
 interface TwitterBotDetailsProps {
   bot: TwitterBotWithSeenInstances | null;
-  // open: boolean;
   /**
    * Handles closing the bot details dialog
    */

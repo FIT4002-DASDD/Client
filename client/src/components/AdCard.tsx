@@ -287,13 +287,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
       </Grid>
       <ImageDialog images={[ad.image]} open={open} handleClose={handleClose} />
       <GoogleBotDetails
-        name={ad.bot.fName + " " + ad.bot.lName}
-        ranking={ad.bot.politicalRanking}
-        other={ad.bot.otherTermsCategory}
-        gender={ad.bot.gender}
-        dob={ad.bot.dob}
-        long={ad.bot.locLong}
-        lat={ad.bot.locLat}
+        bot={ad.bot}
         open={openDetails}
         handleClose={handleCloseDetails}
         displayTerms={displayTerms}

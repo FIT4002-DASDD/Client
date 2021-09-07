@@ -39,6 +39,7 @@ import AdCardSkeleton from "../components/AdCardSkeleton";
 
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
+import { TwitterAdType } from "../helpers/twitterAdTypeEnum";
 
 interface stateType {
   bots: Bot[];
@@ -171,11 +172,29 @@ const Ads = () => {
     setEndDate(date);
   };
 
-  const [adTypeState, setAdTypeState] = useState({
-    promotedTweets: true,
-    promotedFollows: true,
-    unspecified: true,
-  });
+  type TwitterAdTypeItem = {
+    type: TwitterAdType;
+    label: string;
+    checked: boolean;
+  };
+
+  const [adTypeState, setAdTypeState] = useState<TwitterAdTypeItem[]>([
+    {
+      type: TwitterAdType.TWEET,
+      label: "Promoted tweets",
+      checked: true,
+    },
+    {
+      type: TwitterAdType.FOLLOW,
+      label: "Promoted follows",
+      checked: true,
+    },
+    {
+      type: TwitterAdType.UNSPECIFIED,
+      label: "Unspecified",
+      checked: true,
+    },
+  ]);
 
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -193,6 +212,7 @@ const Ads = () => {
       startDate: startDate?.getTime(),
       endDate: endDate?.getTime(),
       groupUnique: source === DataSource.Twitter,
+      adType: adTypeState.flatMap((s) => (s.checked ? s.type : [])),
     };
 
     setLoading(true);
@@ -209,12 +229,17 @@ const Ads = () => {
         setErrorMessage("");
         setLoading(false);
       });
-  }, [page, limit, bots, tags, source, startDate, endDate, totalNumberOfAd]);
-
-  // useEffect(() => {
-  //   setBots([]);
-  //   setTags([]);
-  // }, [source]);
+  }, [
+    page,
+    limit,
+    bots,
+    tags,
+    source,
+    startDate,
+    endDate,
+    adTypeState,
+    totalNumberOfAd,
+  ]);
 
   const handleChange = (event: any, value: number) => {
     setPage(value);
@@ -279,11 +304,25 @@ const Ads = () => {
     </>
   );
 
-  const handleAdTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAdTypeState({
-      ...adTypeState,
-      [event.target.name]: event.target.checked,
-    });
+  // const handleAdTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setAdTypeState({
+  //     ...adTypeState,
+  //     [event.target.name]: event.target.checked,
+  //   });
+  // };
+
+  const handleAdTypeChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    setAdTypeState((s) => [
+      ...s.slice(0, index),
+      {
+        ...s[index],
+        checked: event.target.checked,
+      },
+      ...s.slice(index + 1),
+    ]);
   };
 
   const FilterDrawer = () => (
@@ -482,36 +521,20 @@ const Ads = () => {
           <AccordionDetails style={{ display: "block" }}>
             <FormControl component="fieldset">
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={adTypeState.promotedTweets}
-                      onChange={handleAdTypeChange}
-                      name="promotedTweets"
-                    />
-                  }
-                  label="Promoted tweets"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={adTypeState.promotedFollows}
-                      onChange={handleAdTypeChange}
-                      name="promotedFollows"
-                    />
-                  }
-                  label="Promoted follows"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={adTypeState.unspecified}
-                      onChange={handleAdTypeChange}
-                      name="unspecified"
-                    />
-                  }
-                  label="Unspecified"
-                />
+                {adTypeState.map((type, i) => (
+                  <FormControlLabel
+                    key={i}
+                    control={
+                      <Checkbox
+                        checked={type.checked}
+                        onChange={(e) => {
+                          handleAdTypeChange(e, i);
+                        }}
+                      />
+                    }
+                    label={type.label}
+                  />
+                ))}
               </FormGroup>
             </FormControl>
           </AccordionDetails>
