@@ -285,7 +285,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
           </Grid>
         </Grid>
       </Grid>
-      <ImageDialog images={[ad.image]} open={open} handleClose={handleClose} />
+      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
       <GoogleBotDetails
         bot={ad.bot}
         open={openDetails}
@@ -342,12 +342,10 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
       if (idx === -1) {
         const newBot = Object.assign(i.bot, {
           createdAt: [i.createdAt],
-          image: [i.image],
         });
         a.push(newBot);
       } else {
         a[idx].createdAt.push(i.createdAt);
-        a[idx].image.push(i.image);
       }
     });
     setUniqueBots(a);
@@ -387,11 +385,7 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
               handleClickOpen();
             }}
           >
-            <img
-              className="imageStyle"
-              src={ad.seenInstances.length > 0 ? ad.seenInstances[0].image : ""}
-              alt="Ad screenshot"
-            />
+            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -543,11 +537,7 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
           </Grid>
         </Grid>
       </Grid>
-      <ImageDialog
-        images={ad.seenInstances.map((i) => i.image)}
-        open={open}
-        handleClose={handleClose}
-      />
+      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
       <TwitterBotDetails
         bot={detailsBot}
         handleClose={handleCloseDetails}

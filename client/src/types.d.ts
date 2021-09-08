@@ -1,6 +1,7 @@
 interface BaseAd {
   id: string;
   tags: Tag[]; // TODO: define tag interface
+  image: string;
 }
 
 interface GoogleAd extends BaseAd {
@@ -9,7 +10,6 @@ interface GoogleAd extends BaseAd {
   loggedIn: boolean;
   bot: GoogleBot;
   seenOn: string;
-  image: string;
   createdAt: string;
   adLink: string;
 }
@@ -31,12 +31,10 @@ type TwitterSeenInstances = {
   adSeenId: string;
   botId: string;
   createdAt: string;
-  image: string;
 };
 
 type TwitterBotWithSeenInstances = TwitterBot & {
   createdAt: string[];
-  image: string[];
 };
 
 type Ad = GoogleAd | TwitterAd;

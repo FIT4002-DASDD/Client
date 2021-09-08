@@ -1,10 +1,9 @@
 import { Dialog, DialogContent } from "@material-ui/core";
 import React from "react";
-import Carousel from "react-material-ui-carousel";
 import "./styles/AdCard.css";
 
 interface ImageDialogProps {
-  images: string[];
+  image: string;
   open: boolean;
   handleClose: () => void;
 }
@@ -20,19 +19,14 @@ const ImageDialog = (props: ImageDialogProps) => {
       open={props.open}
     >
       <DialogContent>
-        <Carousel animation="slide" autoPlay={false}>
-          {props.images.map((image, i) => (
-            <img
-              key={i}
-              style={{
-                width: "auto",
-                height: "100%",
-              }}
-              src={image}
-              alt="Ad screenshot full"
-            />
-          ))}
-        </Carousel>
+        <img
+          style={{
+            width: "auto",
+            height: "100%",
+          }}
+          src={props.image}
+          alt="Ad screenshot full"
+        />
       </DialogContent>
     </Dialog>
   );
