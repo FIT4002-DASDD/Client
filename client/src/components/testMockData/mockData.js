@@ -1,5 +1,5 @@
 let mockData = {
-  mockAdWithImg: {
+  mockGoogleAdWithImg: {
     id: "0fac782a-4897-458b-a9bd-ced8639a36fe",
     botId: "f7bd2258-a38e-4388-b05e-27c6c89956f6",
     createdAt: "2020-11-27T14:12:40.000Z",
@@ -33,7 +33,7 @@ let mockData = {
     ],
   },
 
-  mockAdNoImg: {
+  mockGoogleAdNoImg: {
     id: "d0fb9976-8e31-4d9f-840d-339427cd802a",
     botId: "131723d9-8239-4b7f-b7a9-141e6db11f0c",
     createdAt: "2020-11-27T14:12:36.000Z",
@@ -66,7 +66,7 @@ let mockData = {
     ],
   },
 
-  mockAdNoSeenOn: {
+  mockGoogleAdNoSeenOn: {
     id: "2a0f3642-2a08-41ba-a735-cc50417f83fb",
     botId: "131723d9-8239-4b7f-b7a9-141e6db11f0c",
     createdAt: "2020-11-27T14:15:36.000Z",
@@ -99,12 +99,27 @@ let mockData = {
     ],
   },
 
-  mockTags: [
+  mockGoogleTags: [
     {
       id: 2,
       name: "tech",
     },
   ],
+
+  mockGoogleBot: {
+    id: "f4a44f2d-8c85-4014-b720-3009518744b4",
+    username: "awhite2627",
+    dob: "1985-05-06T04:00:00.000Z",
+    gender: "Female",
+    fName: "Allison",
+    lName: "White",
+    otherTermsCategory: 0,
+    password: "AHS528$%",
+    locLat: 42.5803,
+    locLong: -83.0302,
+    type: "google",
+    politicalRanking: 4,
+  },
 };
 
 export default mockData;

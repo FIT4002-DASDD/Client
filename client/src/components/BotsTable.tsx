@@ -137,7 +137,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        <TableCell padding='checkbox'>
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
@@ -149,7 +149,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             // align={headCell.id === "username" ? "left" : "center"}
-            align="left"
+            align='left'
             padding={headCell.disablePadding ? "default" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -217,18 +217,18 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       {numSelected > 0 ? (
         <Typography
           className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
+          color='inherit'
+          variant='subtitle1'
+          component='div'
         >
           {numSelected} selected
         </Typography>
       ) : (
         <Typography
           className={classes.title}
-          variant="h6"
-          id="tableTitle"
-          component="div"
+          variant='h6'
+          id='tableTitle'
+          component='div'
         >
           Bots
         </Typography>
@@ -239,7 +239,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
             to={{ pathname: "/ads", state: { bots: selected } }}
             style={{ textDecoration: "none" }}
           >
-            <Button className={classes.viewAdsButton} color="primary">
+            <Button className={classes.viewAdsButton} color='primary'>
               View ads for selected bots
             </Button>
           </Link>
@@ -364,39 +364,39 @@ export default function EnhancedTable() {
           <TableRow
             hover
             onClick={(event) => handleClick(event, row)}
-            role="checkbox"
+            role='checkbox'
             aria-checked={isItemSelected}
             tabIndex={-1}
             key={index}
             selected={isItemSelected}
           >
-            <TableCell padding="checkbox">
+            <TableCell padding='checkbox'>
               <Checkbox
                 checked={isItemSelected}
                 inputProps={{ "aria-labelledby": labelId }}
               />
             </TableCell>
             <TableCell
-              component="th"
+              component='th'
               id={labelId}
-              scope="row"
-              padding="default"
-              align="left"
+              scope='row'
+              padding='default'
+              align='left'
             >
               {row.username}
             </TableCell>
-            <TableCell align="left">{row.fName + " " + row.lName}</TableCell>
+            <TableCell align='left'>{row.fName + " " + row.lName}</TableCell>
             {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
             {/* <TableCell align='center'>{row.ranking}</TableCell> */}
-            <TableCell align="left">
+            <TableCell align='left'>
               {new Date(row.dob).toLocaleDateString("en-AU")}
             </TableCell>
-            <TableCell align="left">{row.gender}</TableCell>
-            <TableCell align="left">{row.password}</TableCell>
+            <TableCell align='left'>{row.gender}</TableCell>
+            <TableCell align='left'>{row.password}</TableCell>
             {/* <TableCell align="left">
               {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
             </TableCell> */}
-            <TableCell align="left">{row.type}</TableCell>
+            <TableCell align='left'>{row.type}</TableCell>
           </TableRow>
         );
       });
@@ -411,29 +411,29 @@ export default function EnhancedTable() {
           <TableRow
             hover
             onClick={(event) => handleClick(event, row)}
-            role="checkbox"
+            role='checkbox'
             aria-checked={isItemSelected}
             tabIndex={-1}
             key={index}
             selected={isItemSelected}
           >
-            <TableCell padding="checkbox">
+            <TableCell padding='checkbox'>
               <Checkbox
                 checked={isItemSelected}
                 inputProps={{ "aria-labelledby": labelId }}
               />
             </TableCell>
             <TableCell
-              component="th"
+              component='th'
               id={labelId}
-              scope="row"
-              padding="default"
-              align="left"
+              scope='row'
+              padding='default'
+              align='left'
             >
               {row.username}
             </TableCell>
 
-            <TableCell align="left">{row.politicalRanking}</TableCell>
+            <TableCell align='left'>{row.politicalRanking}</TableCell>
           </TableRow>
         );
       });
@@ -445,9 +445,9 @@ export default function EnhancedTable() {
         <TableContainer>
           <Table
             className={classes.table}
-            aria-labelledby="tableTitle"
-            size="medium"
-            aria-label="enhanced table"
+            aria-labelledby='tableTitle'
+            size='medium'
+            aria-label='enhanced table'
           >
             <EnhancedTableHead
               classes={classes}
@@ -463,7 +463,7 @@ export default function EnhancedTable() {
               {bots.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    align="center"
+                    align='center'
                     style={{ fontWeight: "bold" }}
                     colSpan={12}
                   >
@@ -485,7 +485,7 @@ export default function EnhancedTable() {
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
-          component="div"
+          component='div'
           count={bots.length}
           rowsPerPage={rowsPerPage}
           page={page}

@@ -21,9 +21,9 @@ test("Render Ads component and check title", () => {
   expect(headingElement).toBeInTheDocument();
 });
 
-/* if (mockData.mockTags.length) {
+/* if (mockData.mockGoogleTags.length) {
   test("Ad card Click on existing tag", async () => {
-    render(<AdCard ad={mockData.mockAdWithImg} allTags={mockData.mockTags} />);
+    render(<AdCard ad={mockData.mockGoogleAdWithImg} allTags={mockData.mockGoogleTags} />);
     await fireEvent.click(screen.getByTestId("chip-0"));
     expect(screen.getByTestId("chip-0")).not.toHaveClass("MuiChip-outlined");
   });
