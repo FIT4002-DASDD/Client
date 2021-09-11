@@ -1,0 +1,5 @@
+export enum TwitterAdType {
+  UNSPECIFIED = "AD_TYPE_UNSPECIFIED",
+  TWEET = "AD_TYPE_TWEET",
+  FOLLOW = "AD_TYPE_FOLLOW",
+}
