@@ -106,6 +106,13 @@ let mockData = {
     },
   ],
 
+  mockTwiiterTags: [
+    {
+      id: 2,
+      name: "tech",
+    },
+  ],
+
   mockGoogleBot: {
     id: "f4a44f2d-8c85-4014-b720-3009518744b4",
     username: "awhite2627",
