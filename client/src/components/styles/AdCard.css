@@ -1,5 +1,4 @@
 .cardStyle {
-  height: 350px;
   margin-bottom: 20px;
   padding: 15px;
 }
@@ -10,7 +9,6 @@
 
 .cardActionAreaStyle {
   height: 100%;
-  overflow: hidden;
 }
 
 .imageStyle {
@@ -26,11 +24,29 @@
   width: auto;
 }
 
-.adLinkContainerStyle {
-  height: 42%;
+.content {
+  font-size: 18px;
+  font-weight: 600;
+  overflow: hidden;
+  line-height: 1.5rem;
+  max-height: 4.5rem;
+  -webkit-box-orient: vertical;
+  display: block;
+  display: -webkit-box;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  margin: 10px 40px 10px 10px;
 }
 
 .adFontStyle {
   font-size: 18px;
   font-weight: 600px;
+}
+
+.tag-box {
+  border: 1px solid #b2b2b2;
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 150px;
 }

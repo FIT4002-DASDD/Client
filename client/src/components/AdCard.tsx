@@ -2,16 +2,15 @@ import {
   Button,
   Card,
   CardActionArea,
-  Dialog,
-  DialogContent,
   Grid,
   Typography,
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdChip from "./AdChip";
-import BotDetails from "./BotDetails";
+import { GoogleBotDetails, TwitterBotDetails } from "./BotDetails";
+import ImageDialog from "./ImageDialog";
 import SearchTerms from "./SearchTerms";
 import "./styles/AdCard.css";
 
@@ -36,46 +35,37 @@ const processLink = (link: string) => {
   }
 };
 
-interface ImageDialogProps {
-  image: string;
-  open: boolean;
-  handleClose: () => void;
-}
-
-/**
- * Popup dialog for ad image (screenshots)
- */
-const ImageDialog = (props: ImageDialogProps) => {
-  return (
-    <Dialog
-      onClose={props.handleClose}
-      aria-labelledby='simple-dialog-title'
-      open={props.open}
-    >
-      <DialogContent>
-        <img
-          style={{
-            width: "auto",
-            height: "100%",
-          }}
-          src={props.image}
-          alt='Ad screenshot full'
-        />
-      </DialogContent>
-    </Dialog>
-  );
+type GoogleAdCardProp = {
+  /**
+   * The ad to display the card for
+   */
+  ad: GoogleAd;
+  /**
+   * A list of all tags in the system
+   */
+  allTags: Tag[];
+  /**
+   * A callback function to handle creating a new tag
+   */
+  onNewTagCreated?: () => void;
 };
 
-type AdCardProp = {
-  ad: Ad;
+type TwitterAdCardProp = {
+  /**
+   * The ad to display the card for
+   */
+  ad: TwitterAd;
+  /**
+   * A list of all tags in the system
+   */
   allTags: Tag[];
   onNewTagCreated?: () => void;
 };
 
 /**
- * An individual 'card' displayed for each ad on the Ad page (Ad.tsx)
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Google Ads)
  */
-const AdCard = (props: AdCardProp) => {
+export const GoogleAdCard = (props: GoogleAdCardProp) => {
   const { ad, allTags, onNewTagCreated } = props;
   const [open, setOpen] = useState(false);
   /**
@@ -120,7 +110,6 @@ const AdCard = (props: AdCardProp) => {
           item
           xs={4}
           style={{
-            maxHeight: 350,
             background: "#f7f7f7",
             display: "flex",
             justifyContent: "center",
@@ -129,7 +118,7 @@ const AdCard = (props: AdCardProp) => {
         >
           {ad.image ? (
             <CardActionArea
-              style = {{display:'flex', justifyContent:'center'}}
+              style={{ display: "flex", justifyContent: "center" }}
               className='cardActionAreaStyle'
               onClick={() => {
                 handleClickOpen();
@@ -156,7 +145,13 @@ const AdCard = (props: AdCardProp) => {
             container
             style={{ height: "100%", marginLeft: 15, width: "auto" }}
           >
-            <Grid container direction='row' className='adLinkContainerStyle'>
+            <Grid
+              container
+              item
+              xs={12}
+              direction='row'
+              className='adLinkContainerStyle'
+            >
               <Grid item xs={6}>
                 {ad.headline ? (
                   <div>
@@ -213,6 +208,7 @@ const AdCard = (props: AdCardProp) => {
                         padding: 2,
                         paddingLeft: 10,
                         paddingRight: 10,
+                        textTransform: "none",
                       }}
                       onClick={() => {
                         setOpenDetails(true);
@@ -290,37 +286,26 @@ const AdCard = (props: AdCardProp) => {
                 )}
               </Grid>
             </Grid>
-            <Grid container direction='row' style={{ height: "58%" }}>
-              <Grid
-                item
-                xs={12}
-                style={{
-                  border: "1px solid #b2b2b2",
-                  borderRadius: 10,
-                  padding: 10,
-                }}
-              >
-                <div>
-                  <AdChip
-                    ad={ad}
-                    allTags={allTags}
-                    onNewTagCreated={onNewTagCreated}
-                  />
-                </div>
-              </Grid>
+            <Grid
+              item
+              xs={12}
+              className='tag-box'
+              style={{ margin: "20px 10px 10px 10px" }}
+            >
+              <div>
+                <AdChip
+                  ad={ad}
+                  allTags={allTags}
+                  onNewTagCreated={onNewTagCreated}
+                />
+              </div>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
       <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
-      <BotDetails
-        name={ad.bot.fName + " " + ad.bot.lName}
-        ranking={ad.bot.politicalRanking}
-        other={ad.bot.otherTermsCategory}
-        gender={ad.bot.gender}
-        dob={ad.bot.dob}
-        long={ad.bot.locLong}
-        lat={ad.bot.locLat}
+      <GoogleBotDetails
+        bot={ad.bot}
         open={openDetails}
         handleClose={handleCloseDetails}
         displayTerms={displayTerms}
@@ -335,4 +320,253 @@ const AdCard = (props: AdCardProp) => {
   );
 };
 
-export default AdCard;
+/**
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Twitter Ads)
+ */
+export const TwitterAdCard = (props: TwitterAdCardProp) => {
+  const { ad, allTags, onNewTagCreated } = props;
+  /**
+   * The state (open/closed) of the image (screenshot) popup dialog
+   */
+  const [open, setOpen] = useState(false);
+  // /**
+  //  * The state (open/closed) of the bot details popup dialog
+  //  */
+  // const [openDetails, setOpenDetails] = React.useState(false);
+  /**
+   * The state (open/closed) of the bot search terms popup dialog
+   */
+  const [openTerms, setOpenTerms] = React.useState(false);
+  /**
+   * State for initialising search terms
+   */
+  const [terms, setTerms] = React.useState<string[]>([]);
+  /**
+   * State for initialising the title for search terms
+   */
+  const [title, setTitle] = React.useState("");
+
+  const [detailsBot, setDetailsBot] =
+    React.useState<TwitterBotWithSeenInstances | null>(null);
+
+  const [uniqueBots, setUniqueBots] = React.useState<
+    Array<TwitterBotWithSeenInstances>
+  >([]);
+
+  useEffect(() => {
+    let a: Array<TwitterBotWithSeenInstances> = [];
+    ad.seenInstances.forEach((i) => {
+      const idx = a.findIndex((e) => e.id === i.bot.id);
+      if (idx === -1) {
+        const newBot = Object.assign(i.bot, {
+          createdAt: [i.createdAt],
+        });
+        a.push(newBot);
+      } else {
+        a[idx].createdAt.push(i.createdAt);
+      }
+    });
+    setUniqueBots(a);
+  }, [ad.seenInstances]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleCloseDetails = () => {
+    setDetailsBot(null);
+  };
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+  // const displayTerms = (terms: string[], title: string) => {
+  //   setTerms(terms);
+  //   setTitle(title);
+  //   setOpenTerms(true);
+  // };
+
+  return (
+    <Card className='cardStyle'>
+      <Grid container className='overallContainerStyle'>
+        <Grid
+          item
+          xs={4}
+          style={{
+            background: "#f7f7f7",
+          }}
+        >
+          <CardActionArea
+            className='cardActionAreaStyle'
+            onClick={() => {
+              handleClickOpen();
+            }}
+          >
+            <img className='imageStyle' src={ad.image} alt='Ad screenshot' />
+          </CardActionArea>
+        </Grid>
+        <Grid item xs={8}>
+          <Grid
+            container
+            style={{ height: "100%", marginLeft: 15, width: "auto" }}
+          >
+            <Grid
+              container
+              item
+              direction='row'
+              className='adLinkContainerStyle'
+              xs={12}
+            >
+              <Grid item xs={6}>
+                <div>
+                  {ad.content && (
+                    <div className='content' style={{ overflow: "hidden" }}>
+                      {ad.content}
+                    </div>
+                  )}
+                  <div style={{ padding: "20px 0 10px 10px" }}>
+                    {ad.tweetLink && (
+                      <Tooltip
+                        title={
+                          <Typography>{`https://${ad.tweetLink}`}</Typography>
+                        }
+                      >
+                        <Button
+                          variant='outlined'
+                          color='primary'
+                          href={`https://${ad.tweetLink} `}
+                          target='_blank'
+                          rel='noreferrer'
+                          style={{
+                            marginRight: 20,
+                          }}
+                        >
+                          Tweet Link
+                        </Button>
+                      </Tooltip>
+                    )}
+                    {ad.officialLink && (
+                      <Tooltip
+                        title={
+                          <Typography>{`https://${ad.officialLink}`}</Typography>
+                        }
+                      >
+                        <Button
+                          variant='outlined'
+                          color='primary'
+                          href={`https://${ad.officialLink} `}
+                          target='_blank'
+                          rel='noreferrer'
+                          style={{
+                            marginRight: 20,
+                          }}
+                        >
+                          Ad Link
+                        </Button>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography style={{ marginTop: 5 }}>
+                  <span style={{ fontWeight: "bold" }}>Seen count: </span>
+                  {ad.seenInstances.length}
+                </Typography>
+
+                <div style={{ display: "flex" }}>
+                  <div style={{ flexShrink: 0, paddingRight: 8 }}>
+                    <Typography style={{ marginTop: 5 }}>
+                      <span style={{ fontWeight: "bold" }}>Seen bots: </span>
+                    </Typography>
+                  </div>
+                  <div>
+                    {uniqueBots.map((bot, i) => {
+                      return (
+                        <Tooltip
+                          key={i}
+                          title={
+                            <>
+                              <Typography>
+                                Political ranking: {bot.politicalRanking}
+                              </Typography>
+                            </>
+                          }
+                        >
+                          <Button
+                            variant='contained'
+                            style={{
+                              background: "#167070",
+                              padding: "2px 10px",
+                              margin: "8px 10px 0 0",
+                            }}
+                            onClick={() => {
+                              setDetailsBot(bot);
+                            }}
+                          >
+                            <Typography
+                              style={{
+                                color: "#fff",
+                                fontSize: 14,
+                                textTransform: "none",
+                              }}
+                            >
+                              {bot.username}
+                            </Typography>
+                          </Button>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <Grid container style={{ marginTop: 5 }}>
+                    <Grid item>
+                      <Typography style={{ fontWeight: "bold" }}>
+                        Promoter handle:
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Typography style={{ marginLeft: 10 }}>
+                        {ad.promoterHandle}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </div>
+              </Grid>
+            </Grid>
+
+            <Grid
+              item
+              xs={12}
+              className='tag-box'
+              style={{ margin: "20px 10px 10px 10px" }}
+            >
+              <div>
+                <AdChip
+                  ad={ad}
+                  allTags={allTags}
+                  onNewTagCreated={onNewTagCreated}
+                />
+              </div>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
+      <TwitterBotDetails
+        bot={detailsBot}
+        handleClose={handleCloseDetails}
+        //displayTerms={displayTerms}
+      />
+      <SearchTerms
+        open={openTerms}
+        handleClose={handleCloseTerms}
+        terms={terms}
+        title={title}
+      />
+    </Card>
+  );
+};

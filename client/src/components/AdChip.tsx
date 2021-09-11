@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
 import {
@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import { baseApi } from "../api/api";
+import { DataContext } from "../App";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,6 +36,10 @@ type AdChipProp = {
  * Chip component to represent tags on AdCard components
  */
 const AdChip = (props: AdChipProp) => {
+  // Context for data source
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   const classes = useStyles();
   const { allTags, onNewTagCreated } = props;
   const [adOwnTagsId, setAdOwnTags] = useState<number[]>([]);
@@ -72,13 +77,13 @@ const AdChip = (props: AdChipProp) => {
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
     if (hasTag) {
       baseApi
-        .delete(`/google/ads/${adData.id}/tags/${categoryIndex}`)
+        .delete(`/${source}/ads/${adData.id}/tags/${categoryIndex}`)
         .then((res: any) => {
           setAdData(res.data);
         });
     } else {
       baseApi
-        .post(`/google/ads/${adData.id}/tags/${categoryIndex}`)
+        .post(`/${source}/ads/${adData.id}/tags/${categoryIndex}`)
         .then((res: any) => {
           setAdData(res.data);
         });
@@ -103,9 +108,11 @@ const AdChip = (props: AdChipProp) => {
         "Same tag name has already been added, please enter another name"
       );
     } else {
-      baseApi.post(`/google/tags`, { name: tagInputName }).then((res: any) => {
-        if (onNewTagCreated) onNewTagCreated();
-      });
+      baseApi
+        .post(`/${source}/tags`, { name: tagInputName })
+        .then((res: any) => {
+          if (onNewTagCreated) onNewTagCreated();
+        });
       setOpen(false);
     }
   };

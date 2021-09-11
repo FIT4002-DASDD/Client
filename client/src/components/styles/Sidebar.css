@@ -1,6 +1,6 @@
 .sidebar {
   width: 320px;
-  min-height: 100vh;
+  height: 100%;
   position: fixed;
   top: 0;
   left: 0;
@@ -8,6 +8,10 @@
   padding-top: 20px;
   font-family: "Mulish", sans-serif;
   background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 40px;
+  box-sizing: border-box;
 }
 
 .logoText {
@@ -60,4 +64,27 @@
 .sidebar-item:hover {
   cursor: pointer;
   background: #46474f;
+}
+
+.data-source-select-label {
+  font-size: 20px;
+  margin: 20px 0px;
+  color: var(--light-grey);
+}
+
+.sidebar-items {
+  flex-grow: 2;
+}
+
+.data-source-select {
+  width: 280px;
+}
+
+.select-div {
+  padding: 20px;
+}
+
+.data-source-input {
+  color: var(--light-grey);
+  background-color: var(--bg-dark);
 }

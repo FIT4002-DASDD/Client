@@ -1,5 +1,5 @@
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "react-calendar/dist/Calendar.css";
 import {
   getAdCategoryStats,
@@ -13,6 +13,8 @@ import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import CategoryBotStatsChart from "../components/CategoryBotStatsChart";
 import MonthPicker from "../components/MonthPicker";
+import { DataContext } from "../App";
+import { DataSource } from "../helpers/dataSourceEnum";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Statistics = () => {
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   const classes = useStyles();
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [botPoliticalAlignmentData, setBotPoliticalAlignmentData] = useState<
@@ -55,7 +60,12 @@ const Statistics = () => {
   const [adStatData, setAdStatData] = useState<any[]>([]);
 
   useEffect(() => {
-    getBotAlignmentStats().then((res) => {
+    getBotAlignmentStats(source).then((res) => {
+      if (!res || res.length === 0) {
+        setBotPoliticalAlignmentData([]);
+        setBotGenderAlignmentData([]);
+        return;
+      }
       for (const e of res) {
         const data = e.data.map((element: any) => ({
           count: parseFloat(element.count),
@@ -79,8 +89,11 @@ const Statistics = () => {
       }
     });
 
-    getAdCategoryStats().then((res) => {
-      if (!res) return;
+    getAdCategoryStats(source).then((res) => {
+      if (!res) {
+        setAdCategoryData([]);
+        return;
+      }
       const data = res.map((element: any) => ({
         count: parseFloat(element.count),
         label: element.label,
@@ -88,32 +101,59 @@ const Statistics = () => {
       setAdCategoryData(data);
     });
 
-    getAdStats().then((res) => {
+    getAdStats(source).then((res) => {
       if (!res) return;
-      const data = [
-        {
-          header: "Total",
-          content: res.adTotal,
-        },
-        {
-          header: "Tagged",
-          content: res.adTagged,
-        },
-        {
-          header: "Average ads per bot",
-          content: res.adPerBot,
-        },
-        {
-          header: "Total scraping uptime",
-          content: res.uptime ? res.uptime : "N/A",
-        },
-      ];
+      const data =
+        source === DataSource.Google
+          ? [
+              {
+                header: "Total",
+                content: res.adTotal,
+              },
+              {
+                header: "Tagged",
+                content: res.adTagged,
+              },
+              {
+                header: "Average ads per bot",
+                content: res.adPerBot ?? "N/A",
+              },
+              {
+                header: "Total scraping uptime",
+                content: res.uptime ? res.uptime : "N/A",
+              },
+            ]
+          : [
+              {
+                header: "Unique ads scraped",
+                content: res.adUniqueCount,
+              },
+              {
+                header: "Total ad encounters",
+                content: res.adSeenCount,
+              },
+              {
+                header: "Tagged",
+                content: res.adTagged ?? "N/A",
+              },
+              {
+                header: "Average unique ads per bot",
+                content: res.adUniquePerBot,
+              },
+              {
+                header: "Average seen ads per bot",
+                content: res.adSeenPerBot,
+              },
+            ];
 
       setAdStatData(data);
     });
 
-    getCategoryBotStats().then((res) => {
-      if (!res) return;
+    getCategoryBotStats(source).then((res) => {
+      if (!res) {
+        setCategoryBotData([]);
+        return;
+      }
       const data = res.map((element: any) => ({
         avgGender: parseFloat(element.avgGender),
         avgPolitical: parseFloat(element.avgPolitical),
@@ -121,10 +161,10 @@ const Statistics = () => {
       }));
       setCategoryBotData(data);
     });
-  }, []);
+  }, [source]);
 
   useEffect(() => {
-    getAdCountStats(selectedMonth.getTime()).then((res) => {
+    getAdCountStats(source, selectedMonth.getTime()).then((res) => {
       if (!res) return;
       const data = res.map((element: any) => ({
         count: parseFloat(element.count),
@@ -133,7 +173,7 @@ const Statistics = () => {
 
       setAdCountData(data);
     });
-  }, [selectedMonth]);
+  }, [selectedMonth, source]);
 
   const onClickMonth = (value: Date) => {
     console.log(value);
@@ -173,7 +213,7 @@ const Statistics = () => {
     <Paper className={classes.paper}>
       <Grid container spacing={3}>
         <Grid item xs={8}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={0}>
             <Box display="flex" justifyContent="flex-end" m={1} p={1}>
               <Box p={1}>
                 <MonthPicker onClickMonth={onClickMonth} date={selectedMonth} />
@@ -193,25 +233,37 @@ const Statistics = () => {
     </Paper>
   );
 
+  console.log(adStatData);
+
   return (
     <div id="main">
       <h1>Statistics</h1>
       <Grid container spacing={3}>
-        <Grid item xs={3}>
-          {botPieChart1}
-        </Grid>
-        <Grid item xs={3}>
-          {botPieChart2}
-        </Grid>
+        {source === DataSource.Google ? (
+          <>
+            <Grid item xs={3}>
+              {botPieChart1}
+            </Grid>
+            <Grid item xs={3}>
+              {botPieChart2}
+            </Grid>
+          </>
+        ) : (
+          <Grid item xs={6}>
+            {botPieChart1}
+          </Grid>
+        )}
         <Grid item xs={6}>
           {categoryChart}
         </Grid>
         <Grid item xs={12}>
           {adsScrapedChart}
         </Grid>
-        <Grid item xs={8}>
-          {categoryBotChart}
-        </Grid>
+        {source === DataSource.Google && (
+          <Grid item xs={8}>
+            {categoryBotChart}
+          </Grid>
+        )}
       </Grid>
     </div>
   );
@@ -224,7 +276,7 @@ type AdStatRowProp = {
 const AdStatRow = (props: AdStatRowProp) => {
   return (
     <>
-      <Paper>
+      <Paper elevation={0} style={{ borderBottom: "1px solid lightgray" }}>
         <Typography variant="h6">{props.header}</Typography>
         <Typography variant="h4">
           {typeof props.content === "number"
