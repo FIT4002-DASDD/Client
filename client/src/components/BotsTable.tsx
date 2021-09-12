@@ -107,7 +107,7 @@ const getHeadCells = (source: DataSource) => {
     ];
 };
 
-interface EnhancedTableProps {
+interface BotsTableProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
@@ -118,7 +118,7 @@ interface EnhancedTableProps {
   headCells: HeadCell[];
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
+function BotsTableHead(props: BotsTableProps) {
   const {
     classes,
     order,
@@ -199,11 +199,11 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface EnhancedTableToolbarProps {
+interface BotsTableToolbarProps {
   selected: Bot[];
 }
 
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
+const BotsTableToolbar = (props: BotsTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { selected } = props;
   const numSelected = selected.length;
@@ -283,7 +283,7 @@ const useStyles = makeStyles((theme: Theme) =>
 /**
  * Table displayed on Bots page
  */
-export default function EnhancedTable() {
+export default function BotsTable() {
   const dataSourceContext = useContext(DataContext);
   const source = dataSourceContext.dataSource;
 
@@ -441,7 +441,7 @@ export default function EnhancedTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar selected={selected} />
+        <BotsTableToolbar selected={selected} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -449,7 +449,7 @@ export default function EnhancedTable() {
             size="medium"
             aria-label="enhanced table"
           >
-            <EnhancedTableHead
+            <BotsTableHead
               classes={classes}
               order={order}
               orderBy={orderBy}

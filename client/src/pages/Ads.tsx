@@ -34,7 +34,8 @@ import clsx from "clsx";
 import React, { useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { baseApi } from "../api/api";
-import { GoogleAdCard, TwitterAdCard } from "../components/AdCard";
+import GoogleAdCard from "../components/google/GoogleAdCard";
+import TwitterAdCard from "../components/twitter/TwitterAdCard";
 import AdCardSkeleton from "../components/AdCardSkeleton";
 
 import { DataContext } from "../App";
