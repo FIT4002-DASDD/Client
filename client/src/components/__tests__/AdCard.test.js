@@ -2,11 +2,12 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ReactDOM from "react-dom";
 
-import { GoogleAdCard } from "../AdCard";
+import { GoogleAdCard, TwitterAdCard } from "../AdCard";
 import moment from "moment";
 import politicalRanking from "../../helpers/politicalRankings";
 import mockData from "../testMockData/mockData";
 import Geocode from "react-geocode";
+import { act } from "react-dom/test-utils";
 
 let checkDate = moment(mockData.mockGoogleAdWithImg.createdAt).format(
   "YYYY-MMM-D dddd h:mma"
@@ -30,66 +31,78 @@ const processLink = (link) => {
 
 test("Renders in DOM without errors", () => {
   const div = document.createElement("div");
-  ReactDOM.render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />,
-    div
-  );
+  act(() => {
+    ReactDOM.render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdWithImg}
+        allTags={mockData.mockGoogleTags}
+      />,
+      div
+    );
+  });
 });
 
 test("Ad card with Ad link available", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdWithImg}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const buttonText = screen.getByText(/visit ad link/i);
   expect(buttonText).toBeInTheDocument();
 });
 
 test("Ad card with no Ad link available", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdNoImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdNoImg}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const noLinkText = screen.getByText(/No Link Available/i);
   expect(noLinkText).toBeInTheDocument();
 });
 
 test("Ad card date", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdWithImg}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const date = screen.getByText(checkDate);
   expect(date).toBeInTheDocument();
 });
 
 test("Ad card seen bot", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdWithImg}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const botName = screen.getByText(mockData.mockGoogleAdWithImg.bot.username);
   expect(botName).toBeInTheDocument();
 });
 
 test("Ad card with seen on", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdWithImg}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const seenOnButtonText = screen.getByText(
     processLink(mockData.mockGoogleAdWithImg.seenOn)
   );
@@ -97,12 +110,14 @@ test("Ad card with seen on", () => {
 });
 
 test("Ad card without seen on", () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdNoSeenOn}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
+  act(() => {
+    render(
+      <GoogleAdCard
+        ad={mockData.mockGoogleAdNoSeenOn}
+        allTags={mockData.mockGoogleTags}
+      />
+    );
+  });
   const seenOnButtonText = screen.getByText(/Not Applicable/i);
   expect(seenOnButtonText).toBeInTheDocument();
 });
@@ -254,6 +269,83 @@ test("Location in bot details", async () => {
   );
   let address = fullLoc.results[0].formatted_address;
 
-  const botAdress = await screen.findByText(address);
-  expect(botAdress).toBeInTheDocument();
+  const botAddress = await screen.findByText(address);
+  expect(botAddress).toBeInTheDocument();
+});
+
+test("CLI-19: Render Twitter Ad card", () => {
+  const div = document.createElement("div");
+  ReactDOM.render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />,
+    div
+  );
+});
+
+test("CLI-20: Twitter Ad card with Ad link available", () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  const button = screen.getByRole("link", { name: /ad link/i });
+  expect(button).toBeInTheDocument();
+});
+
+test("CLI-21: Twitter Ad card with Tweet link available", () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  const button = screen.getByRole("link", { name: /tweet link/i });
+  expect(button).toBeInTheDocument();
+});
+
+test("CLI-22: Twitter Ad seen count", () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  expect(
+    screen.getByText("Seen count", { exact: false }).parentElement
+  ).toHaveTextContent(mockData.mockTwitterAd.seenInstances.length.toString());
+});
+
+test("CLI-23: Twitter AdCard seen bots", () => {
+  const botNames = [
+    ...new Set(
+      mockData.mockTwitterAd.seenInstances.map((item) => item.bot.username)
+    ),
+  ];
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  botNames.forEach((b) => {
+    const button = screen.getByRole("button", { name: b });
+    expect(button).toBeInTheDocument();
+  });
+});
+
+test("CLI-24: Twitter Ad Card promoter handle", () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  const handle =
+    screen.getByText(/Promoter handle:/i).parentElement.nextElementSibling;
+  expect(handle).toHaveTextContent(
+    new RegExp(mockData.mockTwitterAd.promoterHandle + "$")
+  );
 });

@@ -104,8 +104,8 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
   };
 
   return (
-    <Card className='cardStyle'>
-      <Grid container className='overallContainerStyle'>
+    <Card className="cardStyle">
+      <Grid container className="overallContainerStyle">
         <Grid
           item
           xs={4}
@@ -119,12 +119,12 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
           {ad.image ? (
             <CardActionArea
               style={{ display: "flex", justifyContent: "center" }}
-              className='cardActionAreaStyle'
+              className="cardActionAreaStyle"
               onClick={() => {
                 handleClickOpen();
               }}
             >
-              <img className='imageStyle' src={ad.image} alt='Ad screenshot' />
+              <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
             </CardActionArea>
           ) : (
             <Typography style={{ fontStyle: "italic", color: "#8d8d8d" }}>
@@ -149,8 +149,8 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
               container
               item
               xs={12}
-              direction='row'
-              className='adLinkContainerStyle'
+              direction="row"
+              className="adLinkContainerStyle"
             >
               <Grid item xs={6}>
                 {ad.headline ? (
@@ -161,11 +161,11 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
                       }
                     >
                       <Button
-                        variant='outlined'
-                        color='primary'
+                        variant="outlined"
+                        color="primary"
                         href={`https://${ad.headline} `}
-                        target='_blank'
-                        rel='noreferrer'
+                        target="_blank"
+                        rel="noreferrer"
                       >
                         Visit Ad Link
                       </Button>
@@ -201,7 +201,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
                   <Typography style={{ marginTop: 5 }}>
                     <span style={{ fontWeight: "bold" }}>Seen bot: </span>
                     <Button
-                      variant='contained'
+                      variant="contained"
                       style={{
                         background: "#167070",
                         marginLeft: 10,
@@ -237,7 +237,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
                         {processLink(ad.seenOn)?.length ? (
                           <Tooltip title={<Typography>{ad.seenOn}</Typography>}>
                             <Button
-                              variant='contained'
+                              variant="contained"
                               style={{
                                 background: "#167070",
                                 marginLeft: 10,
@@ -246,8 +246,8 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
                                 paddingRight: 10,
                               }}
                               href={ad.seenOn}
-                              target='_blank'
-                              rel='noreferrer'
+                              target="_blank"
+                              rel="noreferrer"
                             >
                               <Typography
                                 style={{
@@ -289,7 +289,7 @@ export const GoogleAdCard = (props: GoogleAdCardProp) => {
             <Grid
               item
               xs={12}
-              className='tag-box'
+              className="tag-box"
               style={{ margin: "20px 10px 10px 10px" }}
             >
               <div>
@@ -388,8 +388,8 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
   // };
 
   return (
-    <Card className='cardStyle'>
-      <Grid container className='overallContainerStyle'>
+    <Card className="cardStyle">
+      <Grid container className="overallContainerStyle">
         <Grid
           item
           xs={4}
@@ -398,12 +398,12 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
           }}
         >
           <CardActionArea
-            className='cardActionAreaStyle'
+            className="cardActionAreaStyle"
             onClick={() => {
               handleClickOpen();
             }}
           >
-            <img className='imageStyle' src={ad.image} alt='Ad screenshot' />
+            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
           </CardActionArea>
         </Grid>
         <Grid item xs={8}>
@@ -414,14 +414,14 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
             <Grid
               container
               item
-              direction='row'
-              className='adLinkContainerStyle'
+              direction="row"
+              className="adLinkContainerStyle"
               xs={12}
             >
               <Grid item xs={6}>
                 <div>
                   {ad.content && (
-                    <div className='content' style={{ overflow: "hidden" }}>
+                    <div className="content" style={{ overflow: "hidden" }}>
                       {ad.content}
                     </div>
                   )}
@@ -433,11 +433,11 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
                         }
                       >
                         <Button
-                          variant='outlined'
-                          color='primary'
+                          variant="outlined"
+                          color="primary"
                           href={`https://${ad.tweetLink} `}
-                          target='_blank'
-                          rel='noreferrer'
+                          target="_blank"
+                          rel="noreferrer"
                           style={{
                             marginRight: 20,
                           }}
@@ -453,11 +453,11 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
                         }
                       >
                         <Button
-                          variant='outlined'
-                          color='primary'
+                          variant="outlined"
+                          color="primary"
                           href={`https://${ad.officialLink} `}
-                          target='_blank'
-                          rel='noreferrer'
+                          target="_blank"
+                          rel="noreferrer"
                           style={{
                             marginRight: 20,
                           }}
@@ -495,7 +495,7 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
                           }
                         >
                           <Button
-                            variant='contained'
+                            variant="contained"
                             style={{
                               background: "#167070",
                               padding: "2px 10px",
@@ -541,7 +541,7 @@ export const TwitterAdCard = (props: TwitterAdCardProp) => {
             <Grid
               item
               xs={12}
-              className='tag-box'
+              className="tag-box"
               style={{ margin: "20px 10px 10px 10px" }}
             >
               <div>

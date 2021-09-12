@@ -106,7 +106,7 @@ let mockData = {
     },
   ],
 
-  mockTwiiterTags: [
+  mockTwitterTags: [
     {
       id: 2,
       name: "tech",
@@ -126,6 +126,44 @@ let mockData = {
     locLong: -83.0302,
     type: "google",
     politicalRanking: 4,
+  },
+
+  mockTwitterAd: {
+    id: "a6581eda-b9ab-49b7-b66c-7a21ce3211fd",
+    tags: [],
+    image:
+      "https://dasdd-core-stack-dasddadimages-1cag3jbw34wo3.s3.ap-southeast-2.amazonaws.com/twitter/Allison45555547_2021-08-26-19_10_13---969de4c5-b923-4da5-b420-1c207bb1e6b9.png",
+    promoterHandle: "@promoter",
+    content:
+      "CRC CARE\n@crcCARE\nDon't know your acid sulfate soil from your elbow? Our 5 October online workshop is for professionals who aren't experts but need to understand and make management decisions about acid sulfate soils. Learn about regulation, investigation & risk assessment. https://crccare.com/events/understanding-acid-sulfate-soils-workshop-occurrence-and-interpretation-for-consultants-and-project-managers…\n1\n6\n24\nPromoted",
+    officialLink:
+      "https://twitter.com/crcCARE/status/1430434320179601409/photo/1",
+    tweetLink: "https://twitter.com/crcCARE/status/1430434320179601409",
+    adType: "AD_TYPE_TWEET",
+    seenInstances: [
+      {
+        bot: {
+          id: "Allison45555547",
+          username: "Allison45555547",
+          politicalRanking: 4,
+        },
+        adId: "a6581eda-b9ab-49b7-b66c-7a21ce3211fd",
+        adSeenId: "1",
+        botId: "Allison45555547",
+        createdAt: "2021-08-26 01:10:14.463873",
+      },
+      {
+        bot: {
+          id: "im-a-bot",
+          username: "im-a-bot",
+          politicalRanking: 0,
+        },
+        adId: "a6581eda-b9ab-49b7-b66c-7a21ce3211fd",
+        adSeenId: "2",
+        botId: "im-a-bot",
+        createdAt: "2021-08-26 01:10:25.532214",
+      },
+    ],
   },
 };
 
