@@ -76,6 +76,7 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
         a[idx].createdAt.push(i.createdAt);
       }
     });
+    a.forEach((b) => b.createdAt.sort((a, b) => moment(a).diff(moment(b))));
     setUniqueBots(a);
   }, [ad.seenInstances]);
 
@@ -174,6 +175,13 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
                 </div>
               </Grid>
               <Grid item xs={6}>
+                <Typography style={{ marginTop: 5 }}>
+                  <span style={{ fontWeight: "bold" }}>Last seen: </span>
+                  {moment
+                    .max(...ad.seenInstances.map((i) => moment(i.createdAt)))
+                    .format("YYYY-MMM-D h:mma")}
+                </Typography>
+
                 <Typography style={{ marginTop: 5 }}>
                   <span style={{ fontWeight: "bold" }}>Seen count: </span>
                   {ad.seenInstances.length}

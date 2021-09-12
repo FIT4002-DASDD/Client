@@ -129,7 +129,7 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
               <Grid item xs={6}>
                 <Typography style={{ marginTop: 5 }}>
                   <span style={{ fontWeight: "bold" }}>Date: </span>
-                  {moment(ad.createdAt).format("YYYY-MMM-D dddd h:mma")}
+                  {moment(ad.createdAt).format("YYYY-MMM-D h:mma")}
                 </Typography>
                 <Tooltip
                   title={
