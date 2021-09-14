@@ -107,9 +107,9 @@ const Ads = () => {
    */
   const [adSource, setAdSource] = React.useState<DataSource>(source);
   /**
-   * State for number of entries displayed on each page
+   * Number of entries displayed on each page
    */
-  const [limit, setLimit] = useState(30);
+  const LIMIT = 30;
   /**
    * State for total number of ads
    */
@@ -289,8 +289,8 @@ const Ads = () => {
 
   useEffect(() => {
     let params = {
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset: (page - 1) * LIMIT,
+      limit: LIMIT,
       bots: bots.map((a) => a.id),
       tag: tags.map((a) => a.name),
       startDate: startDate?.getTime(),
@@ -312,14 +312,14 @@ const Ads = () => {
         setAdSource(source);
         setAds(res.data.records);
         setTotalNumberOfAd(res.data.metadata.total_count);
-        setPageNumber(Math.ceil(totalNumberOfAd / limit));
+        setPageNumber(Math.ceil(totalNumberOfAd / LIMIT));
         setErrorBooleanForInput(false);
         setErrorMessage("");
         setLoading(false);
       });
   }, [
     page,
-    limit,
+    LIMIT,
     bots,
     tags,
     source,
@@ -732,13 +732,7 @@ const Ads = () => {
           </Typography>
         </span>
       </div>
-      <Divider />
-      {/* <Accordion
-        square
-        expanded={expanded === 0}
-        onChange={handleAccordionChange(0)}
-        className={classes.accordion}
-      > */}
+      <Divider style={{ marginBottom: 20 }} />
 
       {createFilterItems().map((i, k) => (
         <Accordion

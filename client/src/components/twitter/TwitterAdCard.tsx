@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import AdChip from "../AdChip";
 import TwitterBotDetails from "./TwitterBotDetails";
 import ImageDialog from "../ImageDialog";
-import ListDialog from "../ListDialog";
 import "../styles/AdCard.css";
 import { validateLinkPrefix } from "../../helpers/processLink";
 import politicalRanking from "../../helpers/politicalRankings";
@@ -40,22 +39,6 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
    * The state (open/closed) of the image (screenshot) popup dialog
    */
   const [open, setOpen] = useState(false);
-  // /**
-  //  * The state (open/closed) of the bot details popup dialog
-  //  */
-  // const [openDetails, setOpenDetails] = React.useState(false);
-  /**
-   * The state (open/closed) of the bot search terms popup dialog
-   */
-  const [openTerms, setOpenTerms] = React.useState(false);
-  /**
-   * State for initialising search terms
-   */
-  const [terms, setTerms] = React.useState<string[]>([]);
-  /**
-   * State for initialising the title for search terms
-   */
-  const [title, setTitle] = React.useState("");
 
   const [detailsBot, setDetailsBot] =
     React.useState<TwitterBotWithSeenInstances | null>(null);
@@ -89,9 +72,6 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
   };
   const handleCloseDetails = () => {
     setDetailsBot(null);
-  };
-  const handleCloseTerms = () => {
-    setOpenTerms(false);
   };
   return (
     <Card className="cardStyle">
@@ -268,13 +248,6 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
         bot={detailsBot as TwitterBot}
         handleClose={handleCloseDetails}
         seenTimes={detailsBot?.createdAt}
-        //displayTerms={displayTerms}
-      />
-      <ListDialog
-        open={openTerms}
-        handleClose={handleCloseTerms}
-        terms={terms}
-        title={title}
       />
     </Card>
   );
