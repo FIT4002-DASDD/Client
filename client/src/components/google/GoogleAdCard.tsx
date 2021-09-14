@@ -13,6 +13,7 @@ import AdChip from "../AdChip";
 import ImageDialog from "../ImageDialog";
 import "../styles/AdCard.css";
 import GoogleBotDetails from "./GoogleBotDetails";
+import politicalRanking from "../../helpers/politicalRankings";
 
 type GoogleAdCardProp = {
   /**
@@ -114,7 +115,8 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
                   title={
                     <>
                       <Typography>
-                        Political ranking: {ad.bot.politicalRanking}
+                        Political alignment:{" "}
+                        {politicalRanking[ad.bot.politicalRanking]}
                       </Typography>
                       <Typography>
                         Other terms: {ad.bot.otherTermsCategory - 1}

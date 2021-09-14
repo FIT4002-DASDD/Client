@@ -3,19 +3,17 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Grid,
   List,
   ListItem,
   Typography,
 } from "@material-ui/core";
 import moment from "moment";
+import { Map, Marker } from "pigeon-maps";
 import React from "react";
 import otherSearchTerms from "../../helpers/otherSearchTerms";
 import politicalRanking from "../../helpers/politicalRankings";
 import politicalSearchTerms from "../../helpers/politicalSearchTerms";
-import Geocode from "react-geocode";
 import ListDialog from "../ListDialog";
-import { Map, Marker } from "pigeon-maps";
 
 interface GoogleBotDetailsProps {
   /**
@@ -64,18 +62,6 @@ const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
     setOpenTerms(true);
   };
 
-  // This API key has been here for a while which isn't great
-  // Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
-
-  // Geocode.fromLatLng(bot.locLat.toString(), bot.locLong.toString()).then(
-  //   (response: { results: { formatted_address: any }[] }) => {
-  //     const address = response.results[0].formatted_address;
-  //     setLocation(address);
-  //   },
-  //   (error: any) => {
-  //     console.error(error);
-  //   }
-  // );
   return (
     <>
       <Dialog

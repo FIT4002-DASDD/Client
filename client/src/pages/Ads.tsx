@@ -39,6 +39,7 @@ import AdCardSkeleton from "../components/AdCardSkeleton";
 import GoogleAdCard from "../components/google/GoogleAdCard";
 import TwitterAdCard from "../components/twitter/TwitterAdCard";
 import { DataSource } from "../helpers/dataSourceEnum";
+import politicalRankings from "../helpers/politicalRankings";
 import { TwitterAdType } from "../helpers/twitterAdTypeEnum";
 import { TwitterBotType } from "../helpers/twitterBotTypeEnum";
 interface stateType {
@@ -202,6 +203,12 @@ const Ads = () => {
     checked: boolean;
   };
 
+  type PoliticalFilterItem = {
+    ranking: politicalRankings;
+    label: string;
+    checked: boolean;
+  };
+
   const [adTypeState, setAdTypeState] = useState<TwitterAdTypeItem[]>([
     {
       type: TwitterAdType.TWEET,
@@ -238,6 +245,41 @@ const Ads = () => {
     },
   ]);
 
+  const [politicalFilterState, setPoliticalFilterState] = useState<
+    PoliticalFilterItem[]
+  >([
+    {
+      ranking: politicalRankings.Left,
+      label: "Left",
+      checked: true,
+    },
+    {
+      ranking: politicalRankings.CenterLeft,
+      label: "Center-Left",
+      checked: true,
+    },
+    {
+      ranking: politicalRankings.Center,
+      label: "Center",
+      checked: true,
+    },
+    {
+      ranking: politicalRankings.CenterRight,
+      label: "Center-Right",
+      checked: true,
+    },
+    {
+      ranking: politicalRankings.Right,
+      label: "Right",
+      checked: true,
+    },
+    {
+      ranking: politicalRankings.Unspecified,
+      label: "Unspecified",
+      checked: true,
+    },
+  ]);
+
   const classes = useStyles();
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
@@ -256,6 +298,9 @@ const Ads = () => {
       groupUnique: source === DataSource.Twitter,
       adType: adTypeState.flatMap((s) => (s.checked ? s.type : [])),
       botType: botTypeState.flatMap((s) => (s.checked ? s.type : [])),
+      political: politicalFilterState.flatMap((s) =>
+        s.checked ? s.ranking : []
+      ),
     };
 
     setLoading(true);
@@ -283,6 +328,7 @@ const Ads = () => {
     adTypeState,
     botTypeState,
     totalNumberOfAd,
+    politicalFilterState,
   ]);
 
   const handleChange = (event: any, value: number) => {
@@ -367,6 +413,28 @@ const Ads = () => {
       },
       ...s.slice(index + 1),
     ]);
+  };
+
+  const handlePoliticalFilterChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    setPoliticalFilterState((s) => [
+      ...s.slice(0, index),
+      {
+        ...s[index],
+        checked: event.target.checked,
+      },
+      ...s.slice(index + 1),
+    ]);
+  };
+
+  const handleAllPoliticalFilterChange = (toggle: boolean) => {
+    setPoliticalFilterState((s) => {
+      let a = s.slice();
+      a.forEach((i) => (i.checked = toggle));
+      return a;
+    });
   };
 
   const createFilterItems = () => [
@@ -517,6 +585,54 @@ const Ads = () => {
           />
         </Grid>
       </MuiPickersUtilsProvider>,
+    ],
+    [
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+      >
+        <Typography>Political Alignment</Typography>
+      </AccordionSummary>,
+      <AccordionDetails style={{ display: "block" }}>
+        <FormControl component="fieldset">
+          <FormGroup>
+            {politicalFilterState.map((type, i) => (
+              <FormControlLabel
+                key={i}
+                control={
+                  <Checkbox
+                    checked={type.checked}
+                    onChange={(e) => {
+                      handlePoliticalFilterChange(e, i);
+                    }}
+                  />
+                }
+                label={type.label}
+              />
+            ))}
+          </FormGroup>
+        </FormControl>
+        <Grid container style={{ marginTop: 20 }}>
+          <Grid item xs={6}>
+            <Button
+              variant="outlined"
+              style={{ textTransform: "none", width: "90%" }}
+              onClick={() => handleAllPoliticalFilterChange(false)}
+            >
+              Select None
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              variant="outlined"
+              style={{ textTransform: "none", width: "90%" }}
+              onClick={() => handleAllPoliticalFilterChange(true)}
+            >
+              Select All
+            </Button>
+          </Grid>
+        </Grid>
+      </AccordionDetails>,
     ],
     source === DataSource.Twitter ? (
       [

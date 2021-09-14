@@ -14,6 +14,7 @@ import ImageDialog from "../ImageDialog";
 import ListDialog from "../ListDialog";
 import "../styles/AdCard.css";
 import { validateLinkPrefix } from "../../helpers/processLink";
+import politicalRanking from "../../helpers/politicalRankings";
 
 type TwitterAdCardProp = {
   /**
@@ -92,12 +93,6 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
   const handleCloseTerms = () => {
     setOpenTerms(false);
   };
-  // const displayTerms = (terms: string[], title: string) => {
-  //   setTerms(terms);
-  //   setTitle(title);
-  //   setOpenTerms(true);
-  // };
-
   return (
     <Card className="cardStyle">
       <Grid container className="overallContainerStyle">
@@ -201,7 +196,8 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
                           title={
                             <>
                               <Typography>
-                                Political ranking: {bot.politicalRanking}
+                                Political ranking:{" "}
+                                {politicalRanking[bot.politicalRanking]}
                               </Typography>
                             </>
                           }
