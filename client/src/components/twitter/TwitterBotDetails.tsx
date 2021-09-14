@@ -36,7 +36,7 @@ const TwitterBotDetails = (props: TwitterBotDetailsProps) => {
   if (bot === null) {
     return <div />;
   }
-  const ranking: string = politicalRanking[`${bot.politicalRanking}`];
+  const ranking: string = politicalRanking[bot.politicalRanking];
 
   return (
     <Dialog

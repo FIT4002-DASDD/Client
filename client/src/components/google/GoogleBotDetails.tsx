@@ -39,7 +39,7 @@ interface GoogleBotDetailsProps {
  */
 const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
   const { open, bot, handleClose, displayTerms } = props;
-  let ranking: string = politicalRanking[`${bot.politicalRanking}`];
+  let ranking: string = politicalRanking[bot.politicalRanking];
   const [location, setLocation] = React.useState("");
 
   if (!open) {

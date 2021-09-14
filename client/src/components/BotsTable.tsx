@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
+import politicalRanking from "../helpers/politicalRankings";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -80,6 +81,12 @@ const getHeadCells = (source: DataSource) => {
         label: "Username",
       },
       { id: "name", numeric: false, disablePadding: false, label: "Name" },
+      {
+        id: "politicalRanking",
+        numeric: true,
+        disablePadding: false,
+        label: "Political Ranking",
+      },
       { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
       { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
       {
@@ -104,6 +111,14 @@ const getHeadCells = (source: DataSource) => {
         disablePadding: false,
         label: "Political Ranking",
       },
+      { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
+      {
+        id: "password",
+        numeric: false,
+        disablePadding: false,
+        label: "Password",
+      },
+      { id: "type", numeric: false, disablePadding: false, label: "Type" },
     ];
 };
 
@@ -380,14 +395,16 @@ export default function BotsTable() {
               component="th"
               id={labelId}
               scope="row"
-              padding="default"
+              padding="normal"
               align="left"
             >
               {row.username}
             </TableCell>
             <TableCell align="left">{row.fName + " " + row.lName}</TableCell>
             {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
-            {/* <TableCell align='center'>{row.ranking}</TableCell> */}
+            <TableCell align="left">
+              {politicalRanking[row.politicalRanking]}
+            </TableCell>
             <TableCell align="left">
               {new Date(row.dob).toLocaleDateString("en-AU")}
             </TableCell>
@@ -427,13 +444,20 @@ export default function BotsTable() {
               component="th"
               id={labelId}
               scope="row"
-              padding="default"
+              padding="normal"
               align="left"
             >
               {row.username}
             </TableCell>
 
-            <TableCell align="left">{row.politicalRanking}</TableCell>
+            <TableCell align="left">
+              {politicalRanking[row.politicalRanking]}
+            </TableCell>
+            <TableCell align="left">
+              {new Date(row.dob).toLocaleDateString("en-AU")}
+            </TableCell>
+            <TableCell align="left">{row.password}</TableCell>
+            <TableCell align="left">{row.type}</TableCell>
           </TableRow>
         );
       });
@@ -490,7 +514,7 @@ export default function BotsTable() {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
     </div>
