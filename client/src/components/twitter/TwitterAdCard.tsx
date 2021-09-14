@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import AdChip from "../AdChip";
 import TwitterBotDetails from "./TwitterBotDetails";
 import ImageDialog from "../ImageDialog";
-import SearchTerms from "../SearchTerms";
+import ListDialog from "../ListDialog";
 import "../styles/AdCard.css";
 import { validateLinkPrefix } from "../../helpers/processLink";
 
@@ -269,11 +269,12 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
       </Grid>
       <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
       <TwitterBotDetails
-        bot={detailsBot}
+        bot={detailsBot as TwitterBot}
         handleClose={handleCloseDetails}
+        seenTimes={detailsBot?.createdAt}
         //displayTerms={displayTerms}
       />
-      <SearchTerms
+      <ListDialog
         open={openTerms}
         handleClose={handleCloseTerms}
         terms={terms}

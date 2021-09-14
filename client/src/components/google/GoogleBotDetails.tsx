@@ -14,151 +14,162 @@ import otherSearchTerms from "../../helpers/otherSearchTerms";
 import politicalRanking from "../../helpers/politicalRankings";
 import politicalSearchTerms from "../../helpers/politicalSearchTerms";
 import Geocode from "react-geocode";
+import ListDialog from "../ListDialog";
+import { Map, Marker } from "pigeon-maps";
 
 interface GoogleBotDetailsProps {
   /**
-   * Controls open state of the dialog
-   */
-  open: boolean;
-  /**
    * The bot to display details for
    */
-  bot: GoogleBot;
+  bot: GoogleBot | null;
   /**
    * Handles closing the bot details dialog
    */
   handleClose: () => void;
-  /**
-   * Displays search terms in a dialog
-   */
-  displayTerms: (terms: string[], title: string) => void;
 }
 
 /**
  * Displays details for Google bots (used in the GoogleAdCard component)
  */
 const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
-  const { open, bot, handleClose, displayTerms } = props;
-  let ranking: string = politicalRanking[bot.politicalRanking];
-  const [location, setLocation] = React.useState("");
+  const { bot, handleClose } = props;
+  //const [location, setLocation] = React.useState("");
 
-  if (!open) {
+  /**
+   * The state (open/closed) of the bot search terms popup dialog
+   */
+  const [openTerms, setOpenTerms] = React.useState(false);
+  /**
+   * State for initialising search terms
+   */
+  const [terms, setTerms] = React.useState<string[]>([]);
+  /**
+   * State for initialising the title for search terms
+   */
+  const [title, setTitle] = React.useState("");
+
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+
+  if (!bot) {
     return <div />;
   }
 
-  // This API key has been here for a while which isn't great
-  Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
+  let ranking: string = politicalRanking[bot.politicalRanking];
 
-  Geocode.fromLatLng(bot.locLat.toString(), bot.locLong.toString()).then(
-    (response: { results: { formatted_address: any }[] }) => {
-      const address = response.results[0].formatted_address;
-      setLocation(address);
-    },
-    (error: any) => {
-      console.error(error);
-    }
-  );
+  const displayTerms = (terms: string[], title: string) => {
+    setTerms(terms);
+    setTitle(title);
+    setOpenTerms(true);
+  };
+
+  // This API key has been here for a while which isn't great
+  // Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
+
+  // Geocode.fromLatLng(bot.locLat.toString(), bot.locLong.toString()).then(
+  //   (response: { results: { formatted_address: any }[] }) => {
+  //     const address = response.results[0].formatted_address;
+  //     setLocation(address);
+  //   },
+  //   (error: any) => {
+  //     console.error(error);
+  //   }
+  // );
   return (
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="simple-dialog-title"
-      open={open}
-    >
-      <DialogTitle
-        id="simple-dialog-title"
-        style={{
-          borderBottom: "1px solid #b2b2b2",
-        }}
+    <>
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="simple-dialog-title"
+        open={bot !== null}
+        PaperProps={{ style: { width: 480 } }}
       >
-        <Typography
-          align="center"
+        <DialogTitle
+          id="simple-dialog-title"
           style={{
-            fontSize: 22,
-            fontWeight: "bold",
+            borderBottom: "1px solid #b2b2b2",
           }}
         >
-          {bot.fName + " " + bot.lName}
-        </Typography>
-      </DialogTitle>
-      <DialogContent>
-        <List>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Political Inclination: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <span
-                  style={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    background:
-                      ranking === "Left"
-                        ? "#4e79c4"
-                        : ranking === "Right"
-                        ? "#d63e34"
-                        : "#fcb316",
-                    paddingTop: 2,
-                    paddingBottom: 2,
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    borderRadius: 15,
-                  }}
-                >
-                  {ranking}
-                </span>
-              </Grid>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <Grid container style={{ display: "flex", alignItems: "center" }}>
-              <Grid item xs={7}>
-                <Typography>Political Terms: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => {
-                    displayTerms(
-                      politicalSearchTerms[`${bot.politicalRanking}`],
-                      "Political Search Terms"
-                    );
-                  }}
-                >
-                  View
-                </Button>
-              </Grid>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Other Terms: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => {
-                    displayTerms(
-                      otherSearchTerms[`${bot.otherTermsCategory}`],
-                      "Other Search Terms"
-                    );
-                  }}
-                >
-                  View
-                </Button>
-              </Grid>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography>Gender: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <span>{bot.gender}</span>
+          <Typography
+            align="center"
+            style={{
+              fontSize: 22,
+              fontWeight: "bold",
+            }}
+          >
+            {bot.fName + " " + bot.lName}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <List>
+            <ListItem
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography>Political Alignment: </Typography>
+
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: "#fff",
+                  background:
+                    ranking === "Left"
+                      ? "#4e79c4"
+                      : ranking === "Right"
+                      ? "#d63e34"
+                      : "#fcb316",
+                  paddingTop: 2,
+                  paddingBottom: 2,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  borderRadius: 15,
+                }}
+              >
+                {ranking}
+              </span>
+            </ListItem>
+            <ListItem
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography>Political Terms: </Typography>
+
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => {
+                  displayTerms(
+                    politicalSearchTerms[`${bot.politicalRanking}`],
+                    "Political Search Terms"
+                  );
+                }}
+              >
+                View
+              </Button>
+            </ListItem>
+            <ListItem
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography>Other Terms: </Typography>
+
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => {
+                  displayTerms(
+                    otherSearchTerms[`${bot.otherTermsCategory}`],
+                    "Other Search Terms"
+                  );
+                }}
+              >
+                View
+              </Button>
+            </ListItem>
+            <ListItem
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography>Gender: </Typography>
+
+              <span>
+                {bot.gender + " "}
                 {bot.gender === "Female" ? (
                   <span style={{ fontSize: 17, color: "#e449ac" }}>
                     &#9792;
@@ -172,32 +183,49 @@ const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
                     &#9673;
                   </span>
                 )}
-              </Grid>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography> Age: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Typography>{moment().diff(bot.dob, "years")}</Typography>
-              </Grid>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <Grid container>
-              <Grid item xs={7}>
-                <Typography> Location: </Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Typography>{location}</Typography>
-              </Grid>
-            </Grid>
-          </ListItem>
-        </List>
-      </DialogContent>
-    </Dialog>
+              </span>
+            </ListItem>
+            <ListItem
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography> Age: </Typography>
+              <Typography>{moment().diff(bot.dob, "years")}</Typography>
+            </ListItem>
+            <ListItem
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography> Location: </Typography>
+              <div
+                style={{
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  border: "1px solid lightgrey",
+                }}
+              >
+                <Map
+                  height={200}
+                  width={240}
+                  defaultCenter={[bot.locLat, bot.locLong]}
+                  defaultZoom={7}
+                >
+                  <Marker width={30} anchor={[bot.locLat, bot.locLong]} />
+                </Map>
+              </div>
+            </ListItem>
+          </List>
+        </DialogContent>
+      </Dialog>
+      <ListDialog
+        open={openTerms}
+        handleClose={handleCloseTerms}
+        terms={terms}
+        title={title}
+      />
+    </>
   );
 };
 

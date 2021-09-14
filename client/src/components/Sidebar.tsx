@@ -46,7 +46,7 @@ const Sidebar = () => {
       <div className="sidebar">
         <div className="logoText">
           <img src={logo} alt="logo" className="logo"></img>
-          <span>Ad Transparency</span>
+          <span>Dark Ad Scraping</span>
         </div>
         <div className="sidebar-items">
           {SidebarItems.map((item, index) => (

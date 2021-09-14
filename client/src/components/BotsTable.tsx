@@ -1,6 +1,6 @@
+import { TablePagination } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import {
   createStyles,
@@ -13,20 +13,19 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
-import { TablePagination } from "@material-ui/core";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
-import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
-import React, { useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { baseApi } from "../api/api";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 import politicalRanking from "../helpers/politicalRankings";
+import GoogleBotDetails from "./google/GoogleBotDetails";
+import TwitterBotDetails from "./twitter/TwitterBotDetails";
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -85,17 +84,10 @@ const getHeadCells = (source: DataSource) => {
         id: "politicalRanking",
         numeric: true,
         disablePadding: false,
-        label: "Political Ranking",
+        label: "Political Alignment",
       },
       { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
       { id: "gender", numeric: false, disablePadding: false, label: "Gender" },
-      {
-        id: "password",
-        numeric: false,
-        disablePadding: false,
-        label: "Password",
-      },
-      { id: "type", numeric: false, disablePadding: false, label: "Type" },
     ];
   } else
     return [
@@ -109,16 +101,15 @@ const getHeadCells = (source: DataSource) => {
         id: "politicalRanking",
         numeric: true,
         disablePadding: false,
-        label: "Political Ranking",
+        label: "Political Alignment",
       },
       { id: "dob", numeric: false, disablePadding: false, label: "DOB" },
       {
-        id: "password",
+        id: "type",
         numeric: false,
         disablePadding: false,
-        label: "Password",
+        label: "Political Region",
       },
-      { id: "type", numeric: false, disablePadding: false, label: "Type" },
     ];
 };
 
@@ -223,6 +214,9 @@ const BotsTableToolbar = (props: BotsTableToolbarProps) => {
   const { selected } = props;
   const numSelected = selected.length;
 
+  const dataSourceContext = useContext(DataContext);
+  const source = dataSourceContext.dataSource;
+
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -251,7 +245,7 @@ const BotsTableToolbar = (props: BotsTableToolbarProps) => {
       {
         numSelected > 0 ? (
           <Link
-            to={{ pathname: "/ads", state: { bots: selected } }}
+            to={{ pathname: "/ads", state: { source: source, bots: selected } }}
             style={{ textDecoration: "none" }}
           >
             <Button className={classes.viewAdsButton} color="primary">
@@ -303,12 +297,18 @@ export default function BotsTable() {
   const source = dataSourceContext.dataSource;
 
   const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("adcount");
-  const [selected, setSelected] = React.useState<Bot[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [bots, setBots] = React.useState<GoogleBot[] | TwitterBot[]>([]);
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<string>("adcount");
+  const [selected, setSelected] = useState<Bot[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [bots, setBots] = useState<GoogleBot[] | TwitterBot[]>([]);
+
+  const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
+
+  const handleDetailsClose = () => {
+    setDetailsBot(null);
+  };
 
   useEffect(() => {
     baseApi.get(`/${source}/bots`).then((res) => {
@@ -334,6 +334,7 @@ export default function BotsTable() {
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, bot: Bot) => {
+    event.stopPropagation();
     const selectedIndex = selected.map((e) => e.id).indexOf(bot.id);
     let newSelected: Bot[] = [];
 
@@ -375,11 +376,16 @@ export default function BotsTable() {
       .map((row: GoogleBot, index: number) => {
         const labelId = `enhanced-table-checkbox-${index}`;
         const isItemSelected = isSelected(row);
+        const ranking = politicalRanking[row.politicalRanking];
         return (
           <TableRow
             hover
-            onClick={(event) => handleClick(event, row)}
-            role="checkbox"
+            //onClick={(event) => handleClick(event, row)}
+            //role="checkbox"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setDetailsBot(row);
+            }}
             aria-checked={isItemSelected}
             tabIndex={-1}
             key={index}
@@ -387,6 +393,9 @@ export default function BotsTable() {
           >
             <TableCell padding="checkbox">
               <Checkbox
+                onClick={(event) => handleClick(event, row)}
+                role="checkbox"
+                aria-checked={isItemSelected}
                 checked={isItemSelected}
                 inputProps={{ "aria-labelledby": labelId }}
               />
@@ -401,19 +410,31 @@ export default function BotsTable() {
               {row.username}
             </TableCell>
             <TableCell align="left">{row.fName + " " + row.lName}</TableCell>
-            {/*  <TableCell align='center'>{row.adcount}</TableCell> */}
             <TableCell align="left">
-              {politicalRanking[row.politicalRanking]}
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: "#fff",
+                  background:
+                    ranking === "Left"
+                      ? "#4e79c4"
+                      : ranking === "Right"
+                      ? "#d63e34"
+                      : "#fcb316",
+                  paddingTop: 2,
+                  paddingBottom: 2,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  borderRadius: 15,
+                }}
+              >
+                {ranking}
+              </span>
             </TableCell>
             <TableCell align="left">
               {new Date(row.dob).toLocaleDateString("en-AU")}
             </TableCell>
             <TableCell align="left">{row.gender}</TableCell>
-            <TableCell align="left">{row.password}</TableCell>
-            {/* <TableCell align="left">
-              {row.locLat.toFixed(5) + ", " + row.locLong.toFixed(5)}
-            </TableCell> */}
-            <TableCell align="left">{row.type}</TableCell>
           </TableRow>
         );
       });
@@ -424,18 +445,23 @@ export default function BotsTable() {
       .map((row: TwitterBot, index: number) => {
         const labelId = `enhanced-table-checkbox-${index}`;
         const isItemSelected = isSelected(row);
+        const ranking = politicalRanking[row.politicalRanking];
         return (
           <TableRow
             hover
-            onClick={(event) => handleClick(event, row)}
-            role="checkbox"
-            aria-checked={isItemSelected}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setDetailsBot(row);
+            }}
             tabIndex={-1}
             key={index}
             selected={isItemSelected}
           >
             <TableCell padding="checkbox">
               <Checkbox
+                onClick={(event) => handleClick(event, row)}
+                role="checkbox"
+                aria-checked={isItemSelected}
                 checked={isItemSelected}
                 inputProps={{ "aria-labelledby": labelId }}
               />
@@ -451,19 +477,49 @@ export default function BotsTable() {
             </TableCell>
 
             <TableCell align="left">
-              {politicalRanking[row.politicalRanking]}
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: "#fff",
+                  background:
+                    ranking === "Left"
+                      ? "#4e79c4"
+                      : ranking === "Right"
+                      ? "#d63e34"
+                      : "#fcb316",
+                  paddingTop: 2,
+                  paddingBottom: 2,
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  borderRadius: 15,
+                }}
+              >
+                {ranking}
+              </span>
             </TableCell>
             <TableCell align="left">
               {new Date(row.dob).toLocaleDateString("en-AU")}
             </TableCell>
-            <TableCell align="left">{row.password}</TableCell>
-            <TableCell align="left">{row.type}</TableCell>
+            <TableCell align="left">
+              {row.type.charAt(0).toUpperCase() + row.type.slice(1)}
+            </TableCell>
           </TableRow>
         );
       });
 
   return (
     <div className={classes.root}>
+      {source === DataSource.Google ? (
+        <GoogleBotDetails
+          bot={detailsBot as GoogleBot}
+          handleClose={handleDetailsClose}
+        />
+      ) : (
+        <TwitterBotDetails
+          bot={detailsBot as TwitterBot}
+          handleClose={handleDetailsClose}
+        />
+      )}
       <Paper className={classes.paper}>
         <BotsTableToolbar selected={selected} />
         <TableContainer>

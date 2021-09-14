@@ -44,7 +44,6 @@ interface BaseBot {
   id: string;
   username: string;
   politicalRanking: number;
-  password: string;
   dob: Date;
 }
 
@@ -59,7 +58,6 @@ interface GoogleBot extends BaseBot {
 }
 
 interface TwitterBot extends BaseBot {
-  phone: string;
   type: TwitterAdType;
   followedAccounts: string[];
   relevantTags: string[];

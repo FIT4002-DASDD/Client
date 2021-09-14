@@ -7,13 +7,12 @@ import {
 } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import AdChip from "../AdChip";
-import GoogleBotDetails from "./GoogleBotDetails";
-import ImageDialog from "../ImageDialog";
-import SearchTerms from "../SearchTerms";
-import "../styles/AdCard.css";
+import React, { useState } from "react";
 import { extractDomain, validateLinkPrefix } from "../../helpers/processLink";
+import AdChip from "../AdChip";
+import ImageDialog from "../ImageDialog";
+import "../styles/AdCard.css";
+import GoogleBotDetails from "./GoogleBotDetails";
 
 type GoogleAdCardProp = {
   /**
@@ -43,18 +42,6 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
    * The state (open/closed) of the bot details popup dialog
    */
   const [openDetails, setOpenDetails] = React.useState(false);
-  /**
-   * The state (open/closed) of the bot search terms popup dialog
-   */
-  const [openTerms, setOpenTerms] = React.useState(false);
-  /**
-   * State for initialising search terms
-   */
-  const [terms, setTerms] = React.useState<string[]>([]);
-  /**
-   * State for initialising the title for search terms
-   */
-  const [title, setTitle] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -64,14 +51,6 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
   };
   const handleCloseDetails = () => {
     setOpenDetails(false);
-  };
-  const handleCloseTerms = () => {
-    setOpenTerms(false);
-  };
-  const displayTerms = (terms: string[], title: string) => {
-    setTerms(terms);
-    setTitle(title);
-    setOpenTerms(true);
   };
 
   return (
@@ -248,16 +227,8 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
       </Grid>
       <ImageDialog image={ad.image} open={open} handleClose={handleClose} />
       <GoogleBotDetails
-        bot={ad.bot}
-        open={openDetails}
+        bot={openDetails ? ad.bot : null}
         handleClose={handleCloseDetails}
-        displayTerms={displayTerms}
-      />
-      <SearchTerms
-        open={openTerms}
-        handleClose={handleCloseTerms}
-        terms={terms}
-        title={title}
       />
     </Card>
   );
