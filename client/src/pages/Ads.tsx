@@ -672,7 +672,7 @@ const Ads = () => {
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
         >
-          <Typography>Bot Type</Typography>
+          <Typography>Political Region</Typography>
         </AccordionSummary>,
         <AccordionDetails style={{ display: "block" }}>
           <FormControl component="fieldset">
