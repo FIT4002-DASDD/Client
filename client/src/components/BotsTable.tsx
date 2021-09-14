@@ -156,7 +156,7 @@ function BotsTableHead(props: BotsTableProps) {
             key={headCell.id}
             // align={headCell.id === "username" ? "left" : "center"}
             align="left"
-            padding={headCell.disablePadding ? "default" : "default"}
+            padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
