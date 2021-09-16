@@ -309,12 +309,12 @@ const Ads = () => {
         params,
       })
       .then((res: any) => {
-        setAdSource(source);
         setAds(res.data.records);
         setTotalNumberOfAd(res.data.metadata.total_count);
         setPageNumber(Math.ceil(totalNumberOfAd / LIMIT));
         setErrorBooleanForInput(false);
         setErrorMessage("");
+        setAdSource(source);
         setLoading(false);
       });
   }, [
