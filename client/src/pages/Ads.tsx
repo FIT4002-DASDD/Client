@@ -391,14 +391,11 @@ const Ads = () => {
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    setAdTypeState((s) => [
-      ...s.slice(0, index),
-      {
-        ...s[index],
-        checked: event.target.checked,
-      },
-      ...s.slice(index + 1),
-    ]);
+    setAdTypeState((s) =>
+      s.map((e, i) =>
+        i === index ? { ...e, checked: event.target.checked } : e
+      )
+    );
   };
 
   const handleBotTypeChange = (
@@ -416,14 +413,11 @@ const Ads = () => {
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    setPoliticalFilterState((s) => [
-      ...s.slice(0, index),
-      {
-        ...s[index],
-        checked: event.target.checked,
-      },
-      ...s.slice(index + 1),
-    ]);
+    setPoliticalFilterState((s) =>
+      s.map((e, i) =>
+        i === index ? { ...e, checked: event.target.checked } : e
+      )
+    );
   };
 
   const handleAllPoliticalFilterChange = (toggle: boolean) => {
