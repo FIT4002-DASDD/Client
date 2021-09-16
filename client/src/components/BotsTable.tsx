@@ -311,6 +311,7 @@ export default function BotsTable() {
   useEffect(() => {
     baseApi.get(`/${source}/bots`).then((res) => {
       setBots(res.data);
+      setSelected([]);
     });
   }, [source]);
 
