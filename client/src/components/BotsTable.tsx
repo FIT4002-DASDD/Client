@@ -214,8 +214,7 @@ const BotsTableToolbar = (props: BotsTableToolbarProps) => {
   const { selected } = props;
   const numSelected = selected.length;
 
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+  const source = useContext(DataContext).dataSource;
 
   return (
     <Toolbar
@@ -293,8 +292,7 @@ const useStyles = makeStyles((theme: Theme) =>
  * Table displayed on Bots page
  */
 export default function BotsTable() {
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+  const source = useContext(DataContext).dataSource;
 
   const classes = useStyles();
   const [order, setOrder] = useState<Order>("asc");
@@ -335,23 +333,10 @@ export default function BotsTable() {
 
   const handleClick = (event: React.MouseEvent<unknown>, bot: Bot) => {
     event.stopPropagation();
-    const selectedIndex = selected.map((e) => e.id).indexOf(bot.id);
-    let newSelected: Bot[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, bot);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
+    const selectedIndex = selected.findIndex((e) => e.id === bot.id);
+    setSelected((s) =>
+      selectedIndex === -1 ? s.concat(bot) : s.filter((e) => e.id !== bot.id)
+    );
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -380,8 +365,6 @@ export default function BotsTable() {
         return (
           <TableRow
             hover
-            //onClick={(event) => handleClick(event, row)}
-            //role="checkbox"
             style={{ cursor: "pointer" }}
             onClick={() => {
               setDetailsBot(row);
