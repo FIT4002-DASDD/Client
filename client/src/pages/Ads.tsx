@@ -321,6 +321,11 @@ const Ads = () => {
         setErrorMessage("");
         setAdSource(source);
         setLoading(false);
+      })
+      .catch((err) => {
+        if (!axios.isCancel(err)) {
+          console.log(err);
+        }
       });
 
     return () => {

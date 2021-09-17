@@ -2,32 +2,18 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ReactDOM from "react-dom";
 
-import { GoogleAdCard, TwitterAdCard } from "../AdCard";
+import GoogleAdCard from "../google/GoogleAdCard";
+import TwitterAdCard from "../twitter/TwitterAdCard";
 import moment from "moment";
 import politicalRanking from "../../helpers/politicalRankings";
 import mockData from "../testMockData/mockData";
 import Geocode from "react-geocode";
 import { act } from "react-dom/test-utils";
+import { extractDomain } from "../../helpers/processLink";
 
 let checkDate = moment(mockData.mockGoogleAdWithImg.createdAt).format(
-  "YYYY-MMM-D dddd h:mma"
+  "YYYY-MMM-D h:mma"
 );
-
-const processLink = (link) => {
-  if (link) {
-    let link_split = link.split("/");
-    let domain = link_split[2];
-    if (domain) {
-      let prefix = domain.split(".");
-      if (prefix[0].toLowerCase() === "www") {
-        prefix.shift();
-      }
-      domain = prefix.join(".");
-    }
-
-    return domain;
-  }
-};
 
 test("Renders in DOM without errors", () => {
   const div = document.createElement("div");
@@ -104,7 +90,7 @@ test("Ad card with seen on", () => {
     );
   });
   const seenOnButtonText = screen.getByText(
-    processLink(mockData.mockGoogleAdWithImg.seenOn)
+    extractDomain(mockData.mockGoogleAdWithImg.seenOn)
   );
   expect(seenOnButtonText).toBeInTheDocument();
 });
@@ -118,7 +104,7 @@ test("Ad card without seen on", () => {
       />
     );
   });
-  const seenOnButtonText = screen.getByText(/Not Applicable/i);
+  const seenOnButtonText = screen.getByText(/Unavailable/i);
   expect(seenOnButtonText).toBeInTheDocument();
 });
 
@@ -250,27 +236,6 @@ test("Age in bot details", async () => {
     moment().diff(mockData.mockGoogleAdWithImg.bot.dob, "years")
   );
   expect(botAge).toBeInTheDocument();
-});
-
-test("Location in bot details", async () => {
-  render(
-    <GoogleAdCard
-      ad={mockData.mockGoogleAdWithImg}
-      allTags={mockData.mockGoogleTags}
-    />
-  );
-  fireEvent.click(
-    await screen.findByText(mockData.mockGoogleAdWithImg.bot.username)
-  );
-  Geocode.setApiKey("AIzaSyBqDbAmGnJ7qOo-mNeidrZaqm_o0apJ0EA");
-  let fullLoc = await Geocode.fromLatLng(
-    mockData.mockGoogleAdWithImg.bot.locLat.toString(),
-    mockData.mockGoogleAdWithImg.bot.locLong.toString()
-  );
-  let address = fullLoc.results[0].formatted_address;
-
-  const botAddress = await screen.findByText(address);
-  expect(botAddress).toBeInTheDocument();
 });
 
 test("CLI-19: Render Twitter Ad card", () => {
