@@ -15,6 +15,7 @@ interface GoogleAd extends BaseAd {
 }
 
 type TwitterAdType = "AD_TYPE_UNSPECIFIED" | "AD_TYPE_TWEET" | "AD_TYPE_FOLLOW";
+type TwitterBotType = "america" | "australia" | "unspecified";
 
 interface TwitterAd extends BaseAd {
   promoterHandle: string;
@@ -43,21 +44,24 @@ interface BaseBot {
   id: string;
   username: string;
   politicalRanking: number;
+  dob: Date;
 }
 
 interface GoogleBot extends BaseBot {
-  dob: Date;
   fName: string;
   gender: string;
   lName: string;
   locLat: number;
   locLong: number;
   otherTermsCategory: number;
-  password: string;
   type: string;
 }
 
-interface TwitterBot extends BaseBot {}
+interface TwitterBot extends BaseBot {
+  type: TwitterAdType;
+  followedAccounts: string[];
+  relevantTags: string[];
+}
 
 type Bot = GoogleBot | TwitterBot;
 
