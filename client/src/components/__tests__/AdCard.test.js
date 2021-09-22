@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, getByText } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ReactDOM from "react-dom";
 
@@ -67,7 +67,7 @@ test("Ad card date", () => {
   expect(date).toBeInTheDocument();
 });
 
-test("Ad card seen bot", () => {
+test("CLI-5: Google ad card seen bot", () => {
   act(() => {
     render(
       <GoogleAdCard
@@ -121,7 +121,7 @@ if (mockData.mockGoogleTags.length) {
   });
 }
 
-test("Ad card with Ad image", () => {
+test("CLI-9: Google Ad card with Ad image", () => {
   render(
     <GoogleAdCard
       ad={mockData.mockGoogleAdWithImg}
@@ -143,7 +143,7 @@ test("Ad card with no Ad image", () => {
   expect(noImgText).toBeInTheDocument();
 });
 
-test("Ad card image click", async () => {
+test("CLI-11: Google Ad card image click", async () => {
   render(
     <GoogleAdCard
       ad={mockData.mockGoogleAdWithImg}
@@ -313,4 +313,117 @@ test("CLI-24: Twitter Ad Card promoter handle", () => {
   expect(handle).toHaveTextContent(
     new RegExp(mockData.mockTwitterAd.promoterHandle + "$")
   );
+});
+
+if (mockData.mockTwitterTags.length) {
+  test("CLI-25: Twitter Ad card existing tags", async () => {
+    render(
+      <TwitterAdCard
+        ad={mockData.mockTwitterAd}
+        allTags={mockData.mockTwitterTags}
+      />
+    );
+    const tags = screen.getAllByRole("tag");
+    expect(tags).toHaveLength(mockData.mockTwitterTags.length);
+  });
+}
+
+test("CLI-26: Twitter Ad card with Ad image", () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  const adScreenshotAlt = screen.getByAltText(/Ad screenshot/i);
+  expect(adScreenshotAlt).toBeInTheDocument();
+});
+
+test("CLI-27: Twitter Ad card image click", async () => {
+  render(
+    <TwitterAdCard
+      ad={mockData.mockTwitterAd}
+      allTags={mockData.mockTwitterTags}
+    />
+  );
+  fireEvent.click(screen.getByAltText(/Ad screenshot/i));
+  const adScreenshotFullAlt = await screen.findByAltText(/Ad screenshot full/i);
+  expect(adScreenshotFullAlt).toBeInTheDocument();
+});
+
+test("CLI-28: Twitter Ad card click seen bot", () => {
+  act(() => {
+    render(
+      <TwitterAdCard
+        ad={mockData.mockTwitterAd}
+        allTags={mockData.mockTwitterTags}
+      />
+    );
+  });
+  const botName = screen.getByText(
+    mockData.mockTwitterAd.seenInstances[0].bot.username
+  );
+  expect(botName).toBeInTheDocument();
+  fireEvent.click(botName);
+  const botDetails = screen.getByTestId("twitter-bot-details");
+  expect(botDetails).toBeInTheDocument();
+});
+
+test("CLI-29: Twitter Political Inclination in bot details", () => {
+  act(() => {
+    render(
+      <TwitterAdCard
+        ad={mockData.mockTwitterAd}
+        allTags={mockData.mockTwitterTags}
+      />
+    );
+  });
+  const botName = screen.getByText(
+    mockData.mockTwitterAd.seenInstances[0].bot.username
+  );
+  expect(botName).toBeInTheDocument();
+  fireEvent.click(botName);
+  const botDetails = screen.getByTestId("twitter-bot-details");
+  expect(botDetails).toBeInTheDocument();
+  screen.getByText(/Political Alignment:/i);
+  screen.getByText(/Right/i); // with bot politicalRanking=4
+});
+
+test("CLI-30: Twitter Seen count & seen dates in bot details", () => {
+  act(() => {
+    render(
+      <TwitterAdCard
+        ad={mockData.mockTwitterAd}
+        allTags={mockData.mockTwitterTags}
+      />
+    );
+  });
+  const botNameString = mockData.mockTwitterAd.seenInstances[0].bot.username;
+  const seenInstances = mockData.mockTwitterAd.seenInstances.filter(
+    (e) => e.bot.username === botNameString
+  );
+  const botName = screen.getByText(botNameString);
+  expect(botName).toBeInTheDocument();
+  fireEvent.click(botName);
+  const botDetails = screen.getByTestId("twitter-bot-details");
+  expect(botDetails).toBeInTheDocument();
+
+  // Check that the ad seen count displayed is correct
+  screen.getByText(
+    new RegExp(
+      `Seen this ad ${seenInstances.length} time${
+        seenInstances.length > 1 ? "s" : ""
+      }, at:`,
+      "i"
+    )
+  );
+
+  const times = seenInstances.map((e) =>
+    moment(e.createdAt).format("YYYY-MMM-D h:mm:ssa")
+  );
+
+  // Check that times when the ad was seen are displayed
+  times.forEach((time) => {
+    screen.getByText(new RegExp(time, "i"));
+  });
 });

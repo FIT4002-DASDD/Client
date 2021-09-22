@@ -61,7 +61,7 @@ const TwitterBotDetails = (props: TwitterBotDetailsProps) => {
   const ranking: string = politicalRanking[bot.politicalRanking];
 
   return (
-    <>
+    <div data-testid="twitter-bot-details">
       <Dialog
         onClose={handleClose}
         aria-labelledby="simple-dialog-title"
@@ -201,7 +201,7 @@ const TwitterBotDetails = (props: TwitterBotDetailsProps) => {
         terms={terms}
         title={title}
       />
-    </>
+    </div>
   );
 };
 
