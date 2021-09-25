@@ -303,9 +303,25 @@ type BotTableProp = {
    source: DataSource;
 };
 
+type BotsTableProp = {
+  /**
+   * The ad represented by the containing AdCard
+   */
+   bots: GoogleBot[] | TwitterBot[];
+  /**
+   * A list of all tags in the system
+   */
+   source: DataSource;
+  /**
+   * Callback function for handling the creation of a new tag
+   */
+  onNewTagCreated?: () => void;
+};
+
 /**
  * Table displayed on Bots page
  */
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 export default function EnhancedTable(props: BotTableProp) {
   const {bots, source} = props
@@ -320,6 +336,10 @@ export default function EnhancedTable(props: BotTableProp) {
 =======
 export default function BotsTable() {
   const source = useContext(DataContext).dataSource;
+=======
+export default function BotsTable(props: BotsTableProp) {
+  // const source = useContext(DataContext).dataSource;
+>>>>>>> Stashed changes
 
   const classes = useStyles();
   const [order, setOrder] = useState<Order>("asc");
@@ -327,14 +347,15 @@ export default function BotsTable() {
   const [selected, setSelected] = useState<Bot[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [bots, setBots] = useState<GoogleBot[] | TwitterBot[]>([]);
+  // const [bots, setBots] = useState<GoogleBot[] | TwitterBot[]>([]);
 
   const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
 
   const handleDetailsClose = () => {
-    setDetailsBot(null);
+    setDetailsBot(null); 
   };
 
+<<<<<<< Updated upstream
   useEffect(() => {
     baseApi.get(`/${source}/bots`).then((res) => {
       setBots(res.data);
@@ -342,6 +363,14 @@ export default function BotsTable() {
     });
   }, [source]);
 >>>>>>> 800d7fe9cd7b775022fb63c6817f63a9558097aa
+=======
+  // useEffect(() => {
+  //   baseApi.get(`/${source}/bots`).then((res) => {
+  //     setBots(res.data);
+  //     setSelected([]);
+  //   });
+  // }, [source]);
+>>>>>>> Stashed changes
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
