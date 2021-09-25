@@ -11,9 +11,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import "./styles/AdCard.css";
 
-interface SearchTermsProps {
+interface ListDialogProps {
   /** The list of search terms to display */
   terms: string[];
   /** Title to display on the dialog */
@@ -27,7 +26,7 @@ interface SearchTermsProps {
 /**
  * Dialog for displaying search terms
  */
-const SearchTerms = (props: SearchTermsProps) => {
+const ListDialog = (props: ListDialogProps) => {
   return (
     <Dialog
       onClose={props.handleClose}
@@ -85,4 +84,4 @@ const SearchTerms = (props: SearchTermsProps) => {
   );
 };
 
-export default SearchTerms;
+export default ListDialog;
