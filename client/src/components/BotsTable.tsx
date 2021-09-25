@@ -288,11 +288,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+type BotsTableProp = {
+  /**
+   * Bots which scrape the Ads
+   */
+   bots: GoogleBot[] | TwitterBot[];
+  /**
+   * Google or Twitter
+   */
+   source: DataSource;
+};
+
 /**
  * Table displayed on Bots page
  */
-export default function BotsTable() {
-  const source = useContext(DataContext).dataSource;
+export default function BotsTable(props: BotsTableProp) {
+  const {bots, source} = props
 
   const classes = useStyles();
   const [order, setOrder] = useState<Order>("asc");
@@ -300,20 +311,12 @@ export default function BotsTable() {
   const [selected, setSelected] = useState<Bot[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [bots, setBots] = useState<GoogleBot[] | TwitterBot[]>([]);
 
   const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
 
   const handleDetailsClose = () => {
-    setDetailsBot(null);
+    setDetailsBot(null); 
   };
-
-  useEffect(() => {
-    baseApi.get(`/${source}/bots`).then((res) => {
-      setBots(res.data);
-      setSelected([]);
-    });
-  }, [source]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
