@@ -279,13 +279,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+type BotTableProp = {
+  /**
+   * The bots to display in the table
+   */
+   bots: GoogleBot[] | TwitterBot[];
+  /**
+   * A list of all tags in the system
+   */
+   source: DataSource;
+};
 
 /**
  * Table displayed on Bots page
  */
-export default function EnhancedTable() {
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+export default function EnhancedTable(props: BotTableProp) {
+  const {bots, source} = props
 
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
@@ -293,13 +302,7 @@ export default function EnhancedTable() {
   const [selected, setSelected] = React.useState<Bot[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [bots, setBots] = React.useState<GoogleBot[] | TwitterBot[]>([]);
 
-  useEffect(() => {
-    baseApi.get(`/${source}/bots`).then((res) => {
-      setBots(res.data);
-    });
-  }, [source]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,

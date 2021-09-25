@@ -165,6 +165,37 @@ let mockData = {
       },
     ],
   },
+  
+  mockBotData: [{
+    id: "f7bd2258-a38e-4388-b05e-27c6c89956f6",
+    username: "damiandarsey",
+    dob: "1985-04-20T14:00:00.000Z",
+    gender: "Male",
+    fName: "Damian",
+    lName: "DArcey",
+    otherTermsCategory: 5,
+    password: "k3sDApFb6gKFsGK",
+    locLat: 33.4484,
+    locLong: -112.074,
+    type: "google",
+    politicalRanking: 4,
+  },
+  {
+    id: "f7bd2258-a38e-4388-b05e-27c6c899523d",
+    username: "awhite2627",
+    dob: "1985-05-06T04:00:00.000Z",
+    gender: "Female",
+    fName: "Allison",
+    lName: "White",
+    otherTermsCategory: 2,
+    password: "AHS528$%",
+    locLat: 33.005,
+    locLong: -844.074,
+    type: "google",
+    politicalRanking: 9,
+  }
+],
+
 };
 
 export default mockData;
