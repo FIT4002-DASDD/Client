@@ -3,8 +3,7 @@ import { baseApi } from "../api/api";
 import { DataContext } from "../App";
 import BotsTable from "../components/BotsTable";
 const Bots = () => {
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+  const source = useContext(DataContext).dataSource
   const [bots, setBots] = React.useState<GoogleBot[] | TwitterBot[]>([]);
 
   useEffect(() => {

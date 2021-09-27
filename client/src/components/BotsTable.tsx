@@ -207,14 +207,14 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface BotsTableToolbarProps {
   selected: Bot[];
+  source: DataSource;
 }
 
 const BotsTableToolbar = (props: BotsTableToolbarProps) => {
-  const classes = useToolbarStyles();
-  const { selected } = props;
-  const numSelected = selected.length;
 
-  const source = useContext(DataContext).dataSource;
+  const classes = useToolbarStyles();
+  const { selected, source } = props;
+  const numSelected = selected.length;
 
   return (
     <Toolbar
@@ -508,7 +508,7 @@ export default function BotsTable(props: BotsTableProp) {
         />
       )}
       <Paper className={classes.paper}>
-        <BotsTableToolbar selected={selected} />
+        <BotsTableToolbar selected={selected} source={source} />
         <TableContainer>
           <Table
             className={classes.table}
