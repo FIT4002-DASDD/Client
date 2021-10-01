@@ -271,6 +271,7 @@ type AdStatRowProp = {
   header: string;
   content: string | number;
 };
+// Additional data displayed to the right of the AdCountLineChart
 const AdStatRow = (props: AdStatRowProp) => {
   return (
     <>

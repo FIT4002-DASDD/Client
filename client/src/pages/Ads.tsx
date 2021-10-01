@@ -209,6 +209,7 @@ const Ads = () => {
     checked: boolean;
   };
 
+  // Define filter options for ad type
   const [adTypeState, setAdTypeState] = useState<TwitterAdTypeItem[]>([
     {
       type: TwitterAdType.TWEET,
@@ -227,6 +228,7 @@ const Ads = () => {
     },
   ]);
 
+  // Define filter options for bot type
   const [botTypeState, setBotTypeState] = useState<TwitterBotTypeItem[]>([
     {
       type: TwitterBotType.AMERICA,
@@ -245,6 +247,7 @@ const Ads = () => {
     },
   ]);
 
+  // Define filter options for political alignment
   const [politicalFilterState, setPoliticalFilterState] = useState<
     PoliticalFilterItem[]
   >([
@@ -287,6 +290,7 @@ const Ads = () => {
     setFilterDrawerOpen(!filterDrawerOpen);
   };
 
+  // Reload bots when filters/source changes
   useEffect(() => {
     let params = {
       offset: (page - 1) * LIMIT,
@@ -335,6 +339,7 @@ const Ads = () => {
     setPage(value);
   };
 
+  // Load all bots for bot filter autocomplete input box
   useEffect(() => {
     setBotsLoading(true);
     baseApi.get(`/${source}/bots`).then((res) => {
@@ -343,6 +348,7 @@ const Ads = () => {
     });
   }, [source]);
 
+  // Load all tags for bot filter autocomplete input box
   useEffect(() => {
     setTagsLoading(true);
     baseApi.get(`/${source}/tags`).then((res) => {
@@ -687,6 +693,7 @@ const Ads = () => {
     ),
   ];
 
+  // Expanded state of each filter
   const [expanded, setExpanded] = useState<Array<boolean>>(
     new Array(createFilterItems().length).fill(false)
   );
