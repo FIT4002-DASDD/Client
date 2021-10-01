@@ -18,10 +18,8 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { baseApi } from "../api/api";
-import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 import politicalRanking from "../helpers/politicalRankings";
 import GoogleBotDetails from "./google/GoogleBotDetails";
@@ -211,7 +209,6 @@ interface BotsTableToolbarProps {
 }
 
 const BotsTableToolbar = (props: BotsTableToolbarProps) => {
-
   const classes = useToolbarStyles();
   const { selected, source } = props;
   const numSelected = selected.length;
@@ -292,18 +289,18 @@ type BotsTableProp = {
   /**
    * Bots which scrape the Ads
    */
-   bots: GoogleBot[] | TwitterBot[];
+  bots: GoogleBot[] | TwitterBot[];
   /**
    * Google or Twitter
    */
-   source: DataSource;
+  source: DataSource;
 };
 
 /**
  * Table displayed on Bots page
  */
 export default function BotsTable(props: BotsTableProp) {
-  const {bots, source} = props
+  const { bots, source } = props;
 
   const classes = useStyles();
   const [order, setOrder] = useState<Order>("asc");
@@ -315,7 +312,7 @@ export default function BotsTable(props: BotsTableProp) {
   const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
 
   const handleDetailsClose = () => {
-    setDetailsBot(null); 
+    setDetailsBot(null);
   };
 
   const handleRequestSort = (
@@ -356,8 +353,8 @@ export default function BotsTable(props: BotsTableProp) {
 
   const isSelected = (bot: Bot) =>
     selected.map((e) => e.id).indexOf(bot.id) !== -1;
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
+  // const emptyRows =
+  //   rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
   const createGoogleTableRow = (bots: GoogleBot[]) =>
     stableSort(bots, getComparator(order, orderBy))
@@ -521,13 +518,13 @@ export default function BotsTable(props: BotsTableProp) {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={bots.length}
+              rowCount={bots?.length ?? 0}
               onSelectAllClick={handleSelectAllClick}
               numSelected={selected.length}
               headCells={getHeadCells(source)}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
-              {bots.length === 0 ? (
+              {!bots?.length ? (
                 <TableRow>
                   <TableCell
                     align="center"
@@ -542,18 +539,18 @@ export default function BotsTable(props: BotsTableProp) {
               ) : (
                 createTwitterTableRow(bots as TwitterBot[])
               )}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={bots.length}
+          count={bots?.length ?? 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

@@ -9,12 +9,13 @@ import {
   getCategoryBotStats,
 } from "../api/api";
 import AdCountLineChart from "../components/AdCountLineChart";
-import BotAlignmentPieChart from "../components/BotAlignmentPieChart";
+import PieChart from "../components/PieChart";
 import CategoryTreeMapChart from "../components/CategoryTreeMapChart";
 import CategoryBotStatsChart from "../components/CategoryBotStatsChart";
 import MonthPicker from "../components/MonthPicker";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
+import politicalRankings from "../helpers/politicalRankings";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,10 +70,12 @@ const Statistics = () => {
       for (const e of res) {
         const data = e.data.map((element: any) => ({
           count: parseFloat(element.count),
-          label: element.label,
+          label:
+            e.type === "political ranking"
+              ? politicalRankings[parseInt(element.label)]
+              : element.label,
         }));
         // TODO: type checking and avoid hard-coded values?
-        console.log(e.type);
         switch (e.type) {
           case "political ranking":
             // console.log(data);
@@ -181,7 +184,7 @@ const Statistics = () => {
   };
   const botPieChart1 = (
     <Paper className={classes.paper}>
-      <BotAlignmentPieChart
+      <PieChart
         data={botPoliticalAlignmentData}
         title="Bot alignment by political beliefs"
       />
@@ -190,10 +193,7 @@ const Statistics = () => {
 
   const botPieChart2 = (
     <Paper className={classes.paper}>
-      <BotAlignmentPieChart
-        data={botGenderAlignmentData}
-        title="Bot alignment by gender"
-      />
+      <PieChart data={botGenderAlignmentData} title="Bot alignment by gender" />
     </Paper>
   );
 
@@ -232,8 +232,6 @@ const Statistics = () => {
       </Grid>
     </Paper>
   );
-
-  console.log(adStatData);
 
   return (
     <div id="main">
