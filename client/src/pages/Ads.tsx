@@ -698,6 +698,7 @@ const Ads = () => {
     new Array(createFilterItems().length).fill(false)
   );
 
+  // Adjust filter expanded state
   const handleAccordionChange = (panel: number) => {
     setExpanded((e) => {
       let a = [...e];
