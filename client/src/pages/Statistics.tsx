@@ -152,18 +152,20 @@ const Statistics = () => {
       setAdStatData(data);
     });
 
-    getCategoryBotStats(source).then((res) => {
-      if (!res) {
-        setCategoryBotData([]);
-        return;
-      }
-      const data = res.map((element: any) => ({
-        avgGender: parseFloat(element.avgGender),
-        avgPolitical: parseFloat(element.avgPolitical),
-        label: element.label,
-      }));
-      setCategoryBotData(data);
-    });
+    if (source === DataSource.Google) {
+      getCategoryBotStats(source).then((res) => {
+        if (!res) {
+          setCategoryBotData([]);
+          return;
+        }
+        const data = res.map((element: any) => ({
+          avgGender: parseFloat(element.avgGender),
+          avgPolitical: parseFloat(element.avgPolitical),
+          label: element.label,
+        }));
+        setCategoryBotData(data);
+      });
+    }
   }, [source]);
 
   useEffect(() => {
