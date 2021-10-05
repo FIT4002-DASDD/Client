@@ -23,10 +23,6 @@ interface TwitterBotDetailsProps {
    * For when bot details are displayed from Ad; displays the times the Ad was seen by the bot
    */
   seenTimes?: Array<string>;
-  /**
-   * Displays search terms in a dialog
-   */
-  // displayTerms: (terms: string[], title: string) => void;
 }
 
 /**
