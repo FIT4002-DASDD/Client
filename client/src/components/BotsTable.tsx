@@ -68,6 +68,7 @@ interface HeadCell {
   numeric: boolean;
 }
 
+// Configure cells to display in header row
 const getHeadCells = (source: DataSource) => {
   if (source === DataSource.Google) {
     return [
@@ -111,7 +112,7 @@ const getHeadCells = (source: DataSource) => {
     ];
 };
 
-interface BotsTableProps {
+interface BotsTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
@@ -122,7 +123,7 @@ interface BotsTableProps {
   headCells: HeadCell[];
 }
 
-function BotsTableHead(props: BotsTableProps) {
+function BotsTableHead(props: BotsTableHeadProps) {
   const {
     classes,
     order,
@@ -152,7 +153,6 @@ function BotsTableHead(props: BotsTableProps) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            // align={headCell.id === "username" ? "left" : "center"}
             align="left"
             padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
@@ -238,23 +238,16 @@ const BotsTableToolbar = (props: BotsTableToolbarProps) => {
           Bots
         </Typography>
       )}
-      {
-        numSelected > 0 ? (
-          <Link
-            to={{ pathname: "/ads", state: { source: source, bots: selected } }}
-            style={{ textDecoration: "none" }}
-          >
-            <Button className={classes.viewAdsButton} color="primary">
-              View ads for selected bots
-            </Button>
-          </Link>
-        ) : null
-        // <Tooltip title="Filter list">
-        //   <IconButton aria-label="filter list">
-        //     <FilterListIcon />
-        //   </IconButton>
-        // </Tooltip>
-      }
+      {numSelected > 0 ? (
+        <Link
+          to={{ pathname: "/ads", state: { source: source, bots: selected } }}
+          style={{ textDecoration: "none" }}
+        >
+          <Button className={classes.viewAdsButton} color="primary">
+            View ads for selected bots
+          </Button>
+        </Link>
+      ) : null}
     </Toolbar>
   );
 };
@@ -285,7 +278,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type BotsTableProp = {
+type BotsTableProps = {
   /**
    * Bots which scrape the Ads
    */
@@ -299,7 +292,7 @@ type BotsTableProp = {
 /**
  * Table displayed on Bots page
  */
-export default function BotsTable(props: BotsTableProp) {
+export default function BotsTable(props: BotsTableProps) {
   const { bots, source } = props;
 
   const classes = useStyles();
@@ -353,8 +346,6 @@ export default function BotsTable(props: BotsTableProp) {
 
   const isSelected = (bot: Bot) =>
     selected.map((e) => e.id).indexOf(bot.id) !== -1;
-  // const emptyRows =
-  //   rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
   const createGoogleTableRow = (bots: GoogleBot[]) =>
     stableSort(bots, getComparator(order, orderBy))
@@ -539,11 +530,6 @@ export default function BotsTable(props: BotsTableProp) {
               ) : (
                 createTwitterTableRow(bots as TwitterBot[])
               )}
-              {/* {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )} */}
             </TableBody>
           </Table>
         </TableContainer>
