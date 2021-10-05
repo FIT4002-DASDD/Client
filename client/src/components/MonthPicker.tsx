@@ -8,12 +8,19 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 
 // import Calendar from "react-calendar";
 
-const MonthPicker = (props: any) => {
-  const [selectedDate, setSelectedDate] = useState(props.date);
+interface MonthPickerProps {
+  date: Date | null;
+  onClickMonth: (value: Date) => void;
+}
+
+const MonthPicker: React.FC<MonthPickerProps> = ({ date, onClickMonth }) => {
+  const [selectedDate, setSelectedDate] = useState(date);
 
   const handleDateChange = (value: MaterialUiPickersDate) => {
-    setSelectedDate(value);
-    props.onClickMonth(value);
+    if (value) {
+      setSelectedDate(value);
+      onClickMonth(value);
+    }
   };
 
   return (

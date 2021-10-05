@@ -1,15 +1,15 @@
 import React from "react";
 import Chart from "react-apexcharts";
 
-interface BotAlignmentDataItem {
+interface PieChartDataItem {
   label: string;
   count: number;
 }
-type BotAlignmentPieChartProps = {
+type PieChartProps = {
   /**
    * Data to display in the chart
    */
-  data: Array<BotAlignmentDataItem>;
+  data: Array<PieChartDataItem>;
   /**
    * Height of the chart
    */
@@ -23,7 +23,7 @@ type BotAlignmentPieChartProps = {
 /**
  * Pie chart component for bot alignment
  */
-const BotAlignmentPieChart = (props: BotAlignmentPieChartProps) => {
+const PieChart = (props: PieChartProps) => {
   const { data, height, title } = props;
   const labels = data?.map((dataPoint) => dataPoint.label.toString());
   const values = data?.map((dataPoint) => dataPoint.count);
@@ -61,4 +61,4 @@ const BotAlignmentPieChart = (props: BotAlignmentPieChartProps) => {
   );
 };
 
-export default BotAlignmentPieChart;
+export default PieChart;

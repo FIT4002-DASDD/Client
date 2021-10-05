@@ -19,11 +19,10 @@ interface TwitterBotDetailsProps {
    * Handles closing the bot details dialog
    */
   handleClose: () => void;
-  seenTimes?: Array<string>;
   /**
-   * Displays search terms in a dialog
+   * For when bot details are displayed from Ad; displays the times the Ad was seen by the bot
    */
-  // displayTerms: (terms: string[], title: string) => void;
+  seenTimes?: Array<string>;
 }
 
 /**

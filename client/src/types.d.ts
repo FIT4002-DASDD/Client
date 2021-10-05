@@ -58,7 +58,7 @@ interface GoogleBot extends BaseBot {
 }
 
 interface TwitterBot extends BaseBot {
-  type: TwitterAdType;
+  type: TwitterBotType;
   followedAccounts: string[];
   relevantTags: string[];
 }

@@ -47,6 +47,7 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
     Array<TwitterBotWithSeenInstances>
   >([]);
 
+  // Convert seenInstances of Ads into a list of bots with their respective seenInstances
   useEffect(() => {
     let a: Array<TwitterBotWithSeenInstances> = [];
     ad.seenInstances.forEach((i) => {
