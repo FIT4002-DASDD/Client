@@ -5,6 +5,7 @@ import logo from "../images/logo.png";
 import adsIcon from "../images/ads.png";
 import botsIcon from "../images/bots.png";
 import statisticsIcon from "../images/statistics.png";
+import settingsIcon from "../images/settings.png";
 import { Select, MenuItem } from "@material-ui/core";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
@@ -25,6 +26,11 @@ const SidebarItems = [
     name: "Statistics",
     route: "/statistics",
     icon: statisticsIcon,
+  },
+  {
+    name: "Settings",
+    route: "/settings",
+    icon: settingsIcon,
   },
 ];
 
