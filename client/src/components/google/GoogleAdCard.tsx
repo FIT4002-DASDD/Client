@@ -80,14 +80,29 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
             background: "#f7f7f7",
           }}
         >
-          <CardActionArea
-            className="cardActionAreaStyle"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
-          </CardActionArea>
+          {ad.image ? (
+            <CardActionArea
+              style={{ display: "flex", justifyContent: "center" }}
+              className="cardActionAreaStyle"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
+            </CardActionArea>
+          ) : (
+            <Typography style={{ fontStyle: "italic", color: "#8d8d8d" }}>
+              <span
+                style={{
+                  border: "1px dashed #c9c9c9",
+                  padding: "5px 18px 5px 15px",
+                  borderRadius: 5,
+                }}
+              >
+                No screenshot scraped
+              </span>
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={8}>
           <Grid
