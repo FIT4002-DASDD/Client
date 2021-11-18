@@ -38,7 +38,7 @@ test("Bot Dob in Google bots page", () => {
         <BotsTable bots={mockData.mockBotData} source={"google"}/>,
         );
     });
-    const Dob = screen.getByText('21/04/1985');
+    const Dob = screen.getByText('06/05/1985');
     expect(Dob).toBeInTheDocument();
 });
 
