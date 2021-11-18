@@ -849,6 +849,31 @@ const Ads = () => {
             );
           })
         )}
+        <div
+          style={{
+            display: "inline-flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "100%",
+            paddingTop: 10,
+          }}
+        >
+          <TextField
+            label="Page #"
+            size="small"
+            style={{ width: 120 }}
+            variant="outlined"
+            onKeyDown={enterKeyDown}
+            error={errorBooleanForInput}
+            helperText={errorMessage}
+          />
+          <Pagination
+            count={pageNumber}
+            page={page}
+            onChange={handleChange}
+            size="large"
+          />
+        </div>
       </div>
       <FilterDrawer />
     </div>
