@@ -1,3 +1,10 @@
+/**
+ * ListDialog.tsx
+ * Dialog for displaying a list of search terms
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Dialog,

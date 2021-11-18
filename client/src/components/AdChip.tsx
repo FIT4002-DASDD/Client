@@ -1,3 +1,10 @@
+/**
+ * AdChip.tsx
+ * A component for displaying ad tags (as 'chips') on AdCard components
+ * @author Xi Zhang
+ * @updated 2021-11-18
+ */
+
 import React, { useEffect, useState, useContext } from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Chip from "@material-ui/core/Chip";
@@ -42,7 +49,7 @@ type AdChipProp = {
 };
 
 /**
- * Chip component to represent tags on AdCard components
+ * A component for displaying ad tags (as 'chips') on AdCard components
  */
 const AdChip = (props: AdChipProp) => {
   // Context for data source
@@ -76,16 +83,27 @@ const AdChip = (props: AdChipProp) => {
    */
   const [errorMessage, setErrorMessage] = useState("");
 
+  /**
+   * Update the tags already applied to the ad
+   */
   useEffect(() => {
     const tempList = adData.tags.map((tag: Tag) => tag.id);
     setAdOwnTags(tempList);
   }, [adData]);
 
+  /**
+   * Update tag names when tags change
+   */
   useEffect(() => {
     const tempNameList = allTags.map((tag: Tag) => tag.name.toLowerCase());
     setTagsName(tempNameList);
   }, [allTags]);
 
+  /**
+   * Applies or deletes a category/tag from the ad
+   * @param categoryIndex The index of the category to be added/removed
+   * @param hasTag Whether the category is being added or deleted
+   */
   const handleClick = (categoryIndex: number, hasTag: boolean) => {
     if (hasTag) {
       baseApi
@@ -102,18 +120,27 @@ const AdChip = (props: AdChipProp) => {
     }
   };
 
+  /**
+   * Opens the dialog for creating a new tag
+   */
   const handleClickOpen = () => {
     setErrorMessage("");
     setTagInputName("");
     setOpen(true);
   };
 
+  /**
+   * Closes the dialog for creating a new tag
+   */
   const handleClose = () => {
     setErrorMessage("");
     setTagInputName("");
     setOpen(false);
   };
 
+  /**
+   * Handles the creation of a new tag
+   */
   const handleAddTag = () => {
     if (tagsName.includes(tagInputName)) {
       setErrorMessage(
@@ -129,6 +156,9 @@ const AdChip = (props: AdChipProp) => {
     }
   };
 
+  /**
+   * Handles the input of a new tag name
+   */
   const handleTagNameChange = (e: any) => {
     setTagInputName(e.target.value);
   };

@@ -1,3 +1,10 @@
+/**
+ * ImageDialog.tsx
+ * Popup dialog for ad image (screenshots)
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import { Dialog, DialogContent } from "@material-ui/core";
 import React from "react";
 import "./styles/AdCard.css";

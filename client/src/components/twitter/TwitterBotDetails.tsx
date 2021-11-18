@@ -1,3 +1,10 @@
+/**
+ * TwitterBotDetails.tsx
+ * Displays details for Twitter bots (used in the TwitterAdCard component)
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Dialog,
@@ -44,16 +51,27 @@ const TwitterBotDetails = (props: TwitterBotDetailsProps) => {
    */
   const [title, setTitle] = React.useState("");
 
+  /**
+   * Display the terms (list items in the dialog)
+   * @param terms The search terms to display
+   * @param title The title of the dialog
+   */
   const displayTerms = (terms: string[], title: string) => {
     setTerms(terms);
     setTitle(title);
     setOpenTerms(true);
   };
 
+  /**
+   * Close the bot search terms popup dialog
+   */
   const handleCloseTerms = () => {
     setOpenTerms(false);
   };
 
+  /**
+   * Check that bot exists
+   */
   if (bot === null) {
     return <div />;
   }

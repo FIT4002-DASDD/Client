@@ -1,3 +1,9 @@
+/**
+ * NotFound.tsx
+ * Not Found (404) page
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
 import React from "react";
 
 const NotFound = () => {

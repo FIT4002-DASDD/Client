@@ -1,3 +1,10 @@
+/**
+ * Settings.tsx
+ * Settings page
+ * @author Sara Tran
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   CircularProgress,
@@ -11,10 +18,8 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { baseApi } from "../api/api";
-import { DataContext } from "../App";
-
 const useStyles = makeStyles({
   "text-label": {
     fontWeight: "bold",
@@ -26,16 +31,20 @@ const useStyles = makeStyles({
 });
 
 const Settings = () => {
-  const source = useContext(DataContext).dataSource;
+  // State to store bot statuses
   const [botStatus, setBotStatus] = useState<Array<any>>([]);
+  // State for loading status
   const [isLoadingBotStatus, setIsLoadingBotStatus] = useState(false);
+  // State for action status
   const [actionStatus, setActionStatus] = useState<string>("");
   const classes = useStyles();
 
+  // Update bot status upon initial render
   useEffect(() => {
     getAndUpdateBotStatus();
   }, []);
 
+  // Retrieve and update bot statuses
   function getAndUpdateBotStatus() {
     setIsLoadingBotStatus(true);
     baseApi
@@ -50,10 +59,15 @@ const Settings = () => {
       });
   }
 
+  // Handle refresh statuses
   function onClickRefresh() {
     getAndUpdateBotStatus();
   }
 
+  /**
+   * Stops or starts a bot
+   * @param action The action to perform (stop/start)
+   */
   function manageBot(action: "stop" | "start") {
     setIsLoadingBotStatus(true);
     baseApi

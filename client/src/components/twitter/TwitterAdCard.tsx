@@ -1,3 +1,10 @@
+/**
+ * TwitterAdCard.tsx
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Twitter Ads)
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Card,
@@ -40,9 +47,15 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
    */
   const [open, setOpen] = useState(false);
 
+  /**
+   * Bot to show details for
+   */
   const [detailsBot, setDetailsBot] =
     React.useState<TwitterBotWithSeenInstances | null>(null);
 
+  /**
+   * List of bots as unique instances (duplicates are combined)
+   */
   const [uniqueBots, setUniqueBots] = React.useState<
     Array<TwitterBotWithSeenInstances>
   >([]);
@@ -65,12 +78,21 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
     setUniqueBots(a);
   }, [ad.seenInstances]);
 
+  /**
+   * Opens the image dialog
+   */
   const handleClickOpen = () => {
     setOpen(true);
   };
+  /**
+   * Closes the image dialog
+   */
   const handleClose = () => {
     setOpen(false);
   };
+  /**
+   * Closes the details dialog
+   */
   const handleCloseDetails = () => {
     setDetailsBot(null);
   };
