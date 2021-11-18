@@ -49,6 +49,8 @@ import { DataSource } from "../helpers/dataSourceEnum";
 import politicalRankings from "../helpers/politicalRankings";
 import { TwitterAdType } from "../helpers/twitterAdTypeEnum";
 import { TwitterBotType } from "../helpers/twitterBotTypeEnum";
+import axios from "axios";
+
 interface stateType {
   bots: Bot[];
   source: DataSource;
@@ -106,13 +108,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Ads = () => {
   // Context for data source
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+  const source = useContext(DataContext).dataSource;
 
   /**
    * Source (Google/Twitter) for ad data
    */
   const [adSource, setAdSource] = React.useState<DataSource>(source);
+
   /**
    * Number of entries displayed on each page
    */
@@ -154,11 +156,6 @@ const Ads = () => {
   const [bots, setBots] = useState<Bot[]>(
     initialBots?.source === source ? initialBots?.bots ?? [] : []
   ); // empty = no filter
-
-  useEffect(() => {
-    setBots(initialBots?.source === source ? initialBots?.bots ?? [] : []);
-    setTags([]);
-  }, [source, initialBots]);
 
   /**
    * State for the tags filter
@@ -299,6 +296,14 @@ const Ads = () => {
 
   // Reload bots when filters/source changes
   useEffect(() => {
+    setBots(initialBots?.source === source ? initialBots?.bots ?? [] : []);
+    setTags([]);
+  }, [source, initialBots]);
+
+  useEffect(() => {
+    const cancelToken = axios.CancelToken;
+    const cancelSource = cancelToken.source();
+
     let params = {
       offset: (page - 1) * LIMIT,
       limit: LIMIT,
@@ -313,11 +318,11 @@ const Ads = () => {
         s.checked ? s.ranking : []
       ),
     };
-
     setLoading(true);
     baseApi
       .get(`/${source}/ads`, {
         params,
+        cancelToken: cancelSource.token,
       })
       .then((res: any) => {
         setAds(res.data.records);
@@ -327,7 +332,16 @@ const Ads = () => {
         setErrorMessage("");
         setAdSource(source);
         setLoading(false);
+      })
+      .catch((err) => {
+        if (!axios.isCancel(err)) {
+          console.log(err);
+        }
       });
+
+    return () => {
+      cancelSource.cancel();
+    };
   }, [
     page,
     LIMIT,

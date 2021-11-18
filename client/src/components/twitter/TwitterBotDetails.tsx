@@ -142,8 +142,8 @@ const TwitterBotDetails = (props: TwitterBotDetailsProps) => {
                     </Typography>
                   </Grid>
                   <Grid item xs={5}>
-                    {seenTimes.map((time) => (
-                      <Typography>
+                    {seenTimes.map((time, i) => (
+                      <Typography key={i}>
                         {moment(time).format("YYYY-MMM-D h:mm:ssa")}
                       </Typography>
                     ))}
