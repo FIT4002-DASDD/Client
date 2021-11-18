@@ -1,3 +1,10 @@
+/**
+ * TwitterAdCard.tsx
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Twitter Ads)
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Card,
@@ -40,9 +47,15 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
    */
   const [open, setOpen] = useState(false);
 
+  /**
+   * Bot to show details for
+   */
   const [detailsBot, setDetailsBot] =
     React.useState<TwitterBotWithSeenInstances | null>(null);
 
+  /**
+   * List of bots as unique instances (duplicates are combined)
+   */
   const [uniqueBots, setUniqueBots] = React.useState<
     Array<TwitterBotWithSeenInstances>
   >([]);
@@ -65,12 +78,21 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
     setUniqueBots(a);
   }, [ad.seenInstances]);
 
+  /**
+   * Opens the image dialog
+   */
   const handleClickOpen = () => {
     setOpen(true);
   };
+  /**
+   * Closes the image dialog
+   */
   const handleClose = () => {
     setOpen(false);
   };
+  /**
+   * Closes the details dialog
+   */
   const handleCloseDetails = () => {
     setDetailsBot(null);
   };
@@ -84,14 +106,29 @@ const TwitterAdCard = (props: TwitterAdCardProp) => {
             background: "#f7f7f7",
           }}
         >
-          <CardActionArea
-            className="cardActionAreaStyle"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
-          </CardActionArea>
+          {ad.image ? (
+            <CardActionArea
+              style={{ display: "flex", justifyContent: "center" }}
+              className="cardActionAreaStyle"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
+            </CardActionArea>
+          ) : (
+            <Typography style={{ fontStyle: "italic", color: "#8d8d8d" }}>
+              <span
+                style={{
+                  border: "1px dashed #c9c9c9",
+                  padding: "5px 18px 5px 15px",
+                  borderRadius: 5,
+                }}
+              >
+                No screenshot scraped
+              </span>
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={8}>
           <Grid

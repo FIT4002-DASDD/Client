@@ -1,3 +1,10 @@
+/**
+ * AdCountLineChart.tsx
+ * Chart to display statistics about ads scraped
+ * @author Sara Tran
+ * @updated 2021-11-18
+ */
+
 import React from "react";
 import Chart from "react-apexcharts";
 

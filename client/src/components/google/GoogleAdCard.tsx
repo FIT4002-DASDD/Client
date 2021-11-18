@@ -1,3 +1,10 @@
+/**
+ * GoogleAdCard.tsx
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Google Ads)
+ * @author Thev Wickramasinghe
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Card,
@@ -35,6 +42,7 @@ type GoogleAdCardProp = {
  */
 const GoogleAdCard = (props: GoogleAdCardProp) => {
   const { ad, allTags, onNewTagCreated } = props;
+
   /**
    * The state (open/closed) of the image (screenshot) popup dialog
    */
@@ -44,12 +52,21 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
    */
   const [openDetails, setOpenDetails] = React.useState(false);
 
+  /**
+   * Open the image (screenshot) popup dialog
+   */
   const handleClickOpen = () => {
     setOpen(true);
   };
+  /**
+   * Close the image (screenshot) popup dialog
+   */
   const handleClose = () => {
     setOpen(false);
   };
+  /**
+   * Close the bot details popup dialog
+   */
   const handleCloseDetails = () => {
     setOpenDetails(false);
   };
@@ -62,16 +79,34 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
           xs={4}
           style={{
             background: "#f7f7f7",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <CardActionArea
-            className="cardActionAreaStyle"
-            onClick={() => {
-              handleClickOpen();
-            }}
-          >
-            <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
-          </CardActionArea>
+          {ad.image ? (
+            <CardActionArea
+              style={{ display: "flex", justifyContent: "center" }}
+              className="cardActionAreaStyle"
+              onClick={() => {
+                handleClickOpen();
+              }}
+            >
+              <img className="imageStyle" src={ad.image} alt="Ad screenshot" />
+            </CardActionArea>
+          ) : (
+            <Typography style={{ fontStyle: "italic", color: "#8d8d8d" }}>
+              <span
+                style={{
+                  border: "1px dashed #c9c9c9",
+                  padding: "5px 18px 5px 15px",
+                  borderRadius: 5,
+                }}
+              >
+                No screenshot scraped
+              </span>
+            </Typography>
+          )}
         </Grid>
         <Grid item xs={8}>
           <Grid
@@ -155,7 +190,7 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
                     </Button>
                   </Typography>
                 </Tooltip>
-                {ad.seenOn ? (
+                {extractDomain(ad.seenOn)?.length ? (
                   <div>
                     <Grid container style={{ marginTop: 5 }}>
                       <Grid item>
@@ -202,7 +237,7 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
                       </Grid>
                       <Grid item>
                         <Typography style={{ marginLeft: 10 }}>
-                          No Link
+                          Unavailable
                         </Typography>
                       </Grid>
                     </Grid>

@@ -1,3 +1,10 @@
+/**
+ * BotsTable.tsx
+ * Bots table displayed on Bots page
+ * @author Thev Wickramasinghe
+ * @updated 2021-11-18
+ */
+
 import { TablePagination } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -25,6 +32,13 @@ import politicalRanking from "../helpers/politicalRankings";
 import GoogleBotDetails from "./google/GoogleBotDetails";
 import TwitterBotDetails from "./twitter/TwitterBotDetails";
 
+/**
+ *
+ * @param a The first object to compare
+ * @param b The second object to compare
+ * @param orderBy The key to order by
+ * @returns -1 if a is greater, 1 if b is greater, 0 if equal (when comparing based on the orderBy value)
+ */
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -49,6 +63,12 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
+/**
+ * Stable sorts an array using a provided comparator
+ * @param array The array to sort
+ * @param comparator The comparator to sort using
+ * @returns The stably sorted array
+ */
 function stableSort<T>(array: any, comparator: (a: any, b: any) => number) {
   const stabilizedThis = array.map(
     (el: T, index: number) => [el, index] as [T, number]
@@ -112,6 +132,7 @@ const getHeadCells = (source: DataSource) => {
     ];
 };
 
+// Props for the table header
 interface BotsTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
@@ -123,6 +144,11 @@ interface BotsTableHeadProps {
   headCells: HeadCell[];
 }
 
+/**
+ * Creates the table header
+ * @param props The props for the table header
+ * @returns The table header
+ */
 function BotsTableHead(props: BotsTableHeadProps) {
   const {
     classes,
@@ -208,6 +234,11 @@ interface BotsTableToolbarProps {
   source: DataSource;
 }
 
+/**
+ * Table toolbar displayed when bots are selected
+ * @param props The props for the table toolbar
+ * @returns The table toolbar
+ */
 const BotsTableToolbar = (props: BotsTableToolbarProps) => {
   const classes = useToolbarStyles();
   const { selected, source } = props;
@@ -296,18 +327,25 @@ export default function BotsTable(props: BotsTableProps) {
   const { bots, source } = props;
 
   const classes = useStyles();
+  // Order of the table (asc/desc)
   const [order, setOrder] = useState<Order>("asc");
+  // The property of the table to sort by
   const [orderBy, setOrderBy] = useState<string>("adcount");
+  // The selected bots
   const [selected, setSelected] = useState<Bot[]>([]);
+  // The current page
   const [page, setPage] = useState(0);
+  // Rows per page
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  // Bot to show details for
   const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
 
+  // Close the details dialog
   const handleDetailsClose = () => {
     setDetailsBot(null);
   };
 
+  // Handles sorting the table
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: string
@@ -317,6 +355,7 @@ export default function BotsTable(props: BotsTableProps) {
     setOrderBy(property);
   };
 
+  // Handles selecting all bots
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       setSelected(bots);
@@ -325,6 +364,7 @@ export default function BotsTable(props: BotsTableProps) {
     setSelected([]);
   };
 
+  // Handles selecting one bot
   const handleClick = (event: React.MouseEvent<unknown>, bot: Bot) => {
     event.stopPropagation();
     const selectedIndex = selected.findIndex((e) => e.id === bot.id);
@@ -333,10 +373,12 @@ export default function BotsTable(props: BotsTableProps) {
     );
   };
 
+  // Handles changing the table page
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
+  // Handles changing rows per page
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -344,9 +386,19 @@ export default function BotsTable(props: BotsTableProps) {
     setPage(0);
   };
 
+  /**
+   * Check if a bot is currently selected
+   * @param bot The bot to check if it is selected
+   * @returns True if selected; else False
+   */
   const isSelected = (bot: Bot) =>
     selected.map((e) => e.id).indexOf(bot.id) !== -1;
 
+  /**
+   * Creates the table rows for Google bots
+   * @param bots The bots to display
+   * @returns The table rows for the bots
+   */
   const createGoogleTableRow = (bots: GoogleBot[]) =>
     stableSort(bots, getComparator(order, orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -414,6 +466,11 @@ export default function BotsTable(props: BotsTableProps) {
         );
       });
 
+  /**
+   * Creates the table rows for Twitter bots
+   * @param bots The bots to display
+   * @returns The table rows for the bots
+   */
   const createTwitterTableRow = (bots: TwitterBot[]) =>
     stableSort(bots, getComparator(order, orderBy))
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

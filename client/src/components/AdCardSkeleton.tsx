@@ -1,3 +1,10 @@
+/**
+ * AdCardSkeleton.tsx
+ * A loading skeleton placeholder for AdCard components
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import { Card, Grid } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import React from "react";

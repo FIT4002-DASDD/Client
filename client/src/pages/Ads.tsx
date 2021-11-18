@@ -1,3 +1,10 @@
+/**
+ * Ads.tsx
+ * Ads page
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   Accordion,
@@ -42,6 +49,8 @@ import { DataSource } from "../helpers/dataSourceEnum";
 import politicalRankings from "../helpers/politicalRankings";
 import { TwitterAdType } from "../helpers/twitterAdTypeEnum";
 import { TwitterBotType } from "../helpers/twitterBotTypeEnum";
+import axios from "axios";
+
 interface stateType {
   bots: Bot[];
   source: DataSource;
@@ -99,13 +108,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Ads = () => {
   // Context for data source
-  const dataSourceContext = useContext(DataContext);
-  const source = dataSourceContext.dataSource;
+  const source = useContext(DataContext).dataSource;
 
   /**
    * Source (Google/Twitter) for ad data
    */
   const [adSource, setAdSource] = React.useState<DataSource>(source);
+
   /**
    * Number of entries displayed on each page
    */
@@ -147,11 +156,6 @@ const Ads = () => {
   const [bots, setBots] = useState<Bot[]>(
     initialBots?.source === source ? initialBots?.bots ?? [] : []
   ); // empty = no filter
-
-  useEffect(() => {
-    setBots(initialBots?.source === source ? initialBots?.bots ?? [] : []);
-    setTags([]);
-  }, [source, initialBots]);
 
   /**
    * State for the tags filter
@@ -292,6 +296,14 @@ const Ads = () => {
 
   // Reload bots when filters/source changes
   useEffect(() => {
+    setBots(initialBots?.source === source ? initialBots?.bots ?? [] : []);
+    setTags([]);
+  }, [source, initialBots]);
+
+  useEffect(() => {
+    const cancelToken = axios.CancelToken;
+    const cancelSource = cancelToken.source();
+
     let params = {
       offset: (page - 1) * LIMIT,
       limit: LIMIT,
@@ -306,11 +318,11 @@ const Ads = () => {
         s.checked ? s.ranking : []
       ),
     };
-
     setLoading(true);
     baseApi
       .get(`/${source}/ads`, {
         params,
+        cancelToken: cancelSource.token,
       })
       .then((res: any) => {
         setAds(res.data.records);
@@ -320,7 +332,16 @@ const Ads = () => {
         setErrorMessage("");
         setAdSource(source);
         setLoading(false);
+      })
+      .catch((err) => {
+        if (!axios.isCancel(err)) {
+          console.log(err);
+        }
       });
+
+    return () => {
+      cancelSource.cancel();
+    };
   }, [
     page,
     LIMIT,
@@ -335,6 +356,7 @@ const Ads = () => {
     politicalFilterState,
   ]);
 
+  // Handle page change
   const handleChange = (event: any, value: number) => {
     setPage(value);
   };
@@ -357,6 +379,7 @@ const Ads = () => {
     });
   }, [source]);
 
+  // Handle creation of new tag
   const handleOnNewTagCreated = () => {
     baseApi.get(`/${source}/tags`).then((res) => {
       setAllTags(res.data);
@@ -364,6 +387,7 @@ const Ads = () => {
     });
   };
 
+  // Detect Enter key (used for page number input)
   const enterKeyDown = (e: any) => {
     if (e.keyCode === 13) {
       if (
@@ -383,6 +407,7 @@ const Ads = () => {
     }
   };
 
+  // Placeholder AdCard skeletons for loading
   const LoadSkeleton = () => (
     <>
       {Array(3)
@@ -393,6 +418,11 @@ const Ads = () => {
     </>
   );
 
+  /**
+   * Handles changing the ad type filter
+   * @param event ChangeEvent object
+   * @param index Index of selected ad type
+   */
   const handleAdTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -404,6 +434,11 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Handles changing the bot type filter
+   * @param event ChangeEvent object
+   * @param index Index of selected bot type
+   */
   const handleBotTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -415,6 +450,11 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Handles changing the political alignment filter
+   * @param event ChangeEvent object
+   * @param index Index of selected political alignment
+   */
   const handlePoliticalFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -426,10 +466,18 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Select or deselect all political alignment filters
+   * @param toggle Whether to select or deselect all political alignment filters
+   */
   const handleAllPoliticalFilterChange = (toggle: boolean) => {
     setPoliticalFilterState((s) => s.map((e) => ({ ...e, checked: toggle })));
   };
 
+  /**
+   * Creates accordion items for filters
+   * @returns A list of accordion items for each filter
+   */
   const createFilterItems = () => [
     [
       <AccordionSummary
@@ -707,6 +755,7 @@ const Ads = () => {
     });
   };
 
+  // Right sidebar (drawer) component for filters
   const FilterDrawer = () => (
     <Drawer
       className={classes.drawer}
@@ -814,6 +863,31 @@ const Ads = () => {
             );
           })
         )}
+        <div
+          style={{
+            display: "inline-flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "100%",
+            paddingTop: 10,
+          }}
+        >
+          <TextField
+            label="Page #"
+            size="small"
+            style={{ width: 120 }}
+            variant="outlined"
+            onKeyDown={enterKeyDown}
+            error={errorBooleanForInput}
+            helperText={errorMessage}
+          />
+          <Pagination
+            count={pageNumber}
+            page={page}
+            onChange={handleChange}
+            size="large"
+          />
+        </div>
       </div>
       <FilterDrawer />
     </div>

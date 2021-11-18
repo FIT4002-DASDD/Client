@@ -1,3 +1,10 @@
+/**
+ * PieChart.tsx
+ * Pie chart component for bot alignment
+ * @author Sara Tran
+ * @updated 2021-11-18
+ */
+
 import React from "react";
 import Chart from "react-apexcharts";
 
@@ -34,13 +41,6 @@ const PieChart = (props: PieChartProps) => {
       position: "bottom",
     },
     chart: {
-      events: {
-        // dataPointSelection: (event, chartContext, config) => {
-        //   const { dataPointIndex } = config;
-        //   console.log(dataPointIndex);
-        //   // TODO: anything happens when clicking item in chart?
-        // },
-      },
       toolbar: {
         show: true,
       },
