@@ -3,6 +3,10 @@ const twitterBot = {
   id: "bot-id",
   username: "iamabot",
   politicalRanking: 4,
+  dob: "1985-05-06 14:00:00.000000",
+  type: "america",
+  followedAccounts: ["@follow1, @follow2"],
+  relevantTags: ["#tag1", "#tag2"],
 };
 
 const seenInstances = [
@@ -22,6 +26,8 @@ const twitterAd = {
   promoterHandle: "@promoter",
   content: "Hi this is a cute kitten",
   seenInstances: seenInstances,
+  officialLink: "https://twitter.com",
+  tweetLink: "https://twitter.com",
 };
 
 const allTags = [{ id: 1, name: "tag" }];

@@ -18,10 +18,8 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { baseApi } from "../api/api";
-import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 import politicalRanking from "../helpers/politicalRankings";
 import GoogleBotDetails from "./google/GoogleBotDetails";
@@ -70,6 +68,7 @@ interface HeadCell {
   numeric: boolean;
 }
 
+// Configure cells to display in header row
 const getHeadCells = (source: DataSource) => {
   if (source === DataSource.Google) {
     return [
@@ -113,7 +112,7 @@ const getHeadCells = (source: DataSource) => {
     ];
 };
 
-interface BotsTableProps {
+interface BotsTableHeadProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
@@ -124,7 +123,7 @@ interface BotsTableProps {
   headCells: HeadCell[];
 }
 
-function BotsTableHead(props: BotsTableProps) {
+function BotsTableHead(props: BotsTableHeadProps) {
   const {
     classes,
     order,
@@ -154,7 +153,6 @@ function BotsTableHead(props: BotsTableProps) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            // align={headCell.id === "username" ? "left" : "center"}
             align="left"
             padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
@@ -207,14 +205,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
 
 interface BotsTableToolbarProps {
   selected: Bot[];
+  source: DataSource;
 }
 
 const BotsTableToolbar = (props: BotsTableToolbarProps) => {
   const classes = useToolbarStyles();
-  const { selected } = props;
+  const { selected, source } = props;
   const numSelected = selected.length;
-
-  const source = useContext(DataContext).dataSource;
 
   return (
     <Toolbar
@@ -241,23 +238,16 @@ const BotsTableToolbar = (props: BotsTableToolbarProps) => {
           Bots
         </Typography>
       )}
-      {
-        numSelected > 0 ? (
-          <Link
-            to={{ pathname: "/ads", state: { source: source, bots: selected } }}
-            style={{ textDecoration: "none" }}
-          >
-            <Button className={classes.viewAdsButton} color="primary">
-              View ads for selected bots
-            </Button>
-          </Link>
-        ) : null
-        // <Tooltip title="Filter list">
-        //   <IconButton aria-label="filter list">
-        //     <FilterListIcon />
-        //   </IconButton>
-        // </Tooltip>
-      }
+      {numSelected > 0 ? (
+        <Link
+          to={{ pathname: "/ads", state: { source: source, bots: selected } }}
+          style={{ textDecoration: "none" }}
+        >
+          <Button className={classes.viewAdsButton} color="primary">
+            View ads for selected bots
+          </Button>
+        </Link>
+      ) : null}
     </Toolbar>
   );
 };
@@ -288,11 +278,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+type BotsTableProps = {
+  /**
+   * Bots which scrape the Ads
+   */
+  bots: GoogleBot[] | TwitterBot[];
+  /**
+   * Google or Twitter
+   */
+  source: DataSource;
+};
+
 /**
  * Table displayed on Bots page
  */
-export default function BotsTable() {
-  const source = useContext(DataContext).dataSource;
+export default function BotsTable(props: BotsTableProps) {
+  const { bots, source } = props;
 
   const classes = useStyles();
   const [order, setOrder] = useState<Order>("asc");
@@ -300,20 +301,12 @@ export default function BotsTable() {
   const [selected, setSelected] = useState<Bot[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [bots, setBots] = useState<GoogleBot[] | TwitterBot[]>([]);
 
   const [detailsBot, setDetailsBot] = useState<Bot | null>(null);
 
   const handleDetailsClose = () => {
     setDetailsBot(null);
   };
-
-  useEffect(() => {
-    baseApi.get(`/${source}/bots`).then((res) => {
-      setBots(res.data);
-      setSelected([]);
-    });
-  }, [source]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -353,8 +346,6 @@ export default function BotsTable() {
 
   const isSelected = (bot: Bot) =>
     selected.map((e) => e.id).indexOf(bot.id) !== -1;
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, bots.length - page * rowsPerPage);
 
   const createGoogleTableRow = (bots: GoogleBot[]) =>
     stableSort(bots, getComparator(order, orderBy))
@@ -505,7 +496,7 @@ export default function BotsTable() {
         />
       )}
       <Paper className={classes.paper}>
-        <BotsTableToolbar selected={selected} />
+        <BotsTableToolbar selected={selected} source={source} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -518,13 +509,13 @@ export default function BotsTable() {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={bots.length}
+              rowCount={bots?.length ?? 0}
               onSelectAllClick={handleSelectAllClick}
               numSelected={selected.length}
               headCells={getHeadCells(source)}
             />
             <TableBody style={{ maxHeight: 525, overflow: "auto" }}>
-              {bots.length === 0 ? (
+              {!bots?.length ? (
                 <TableRow>
                   <TableCell
                     align="center"
@@ -539,18 +530,13 @@ export default function BotsTable() {
               ) : (
                 createTwitterTableRow(bots as TwitterBot[])
               )}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={bots.length}
+          count={bots?.length ?? 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
