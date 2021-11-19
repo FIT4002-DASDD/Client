@@ -1,3 +1,10 @@
+/**
+ * GoogleAdCard.tsx
+ * An individual 'card' displayed for each ad on the Ad page (Ad.tsx) (For Google Ads)
+ * @author Thev Wickramasinghe
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Card,
@@ -45,12 +52,21 @@ const GoogleAdCard = (props: GoogleAdCardProp) => {
    */
   const [openDetails, setOpenDetails] = React.useState(false);
 
+  /**
+   * Open the image (screenshot) popup dialog
+   */
   const handleClickOpen = () => {
     setOpen(true);
   };
+  /**
+   * Close the image (screenshot) popup dialog
+   */
   const handleClose = () => {
     setOpen(false);
   };
+  /**
+   * Close the bot details popup dialog
+   */
   const handleCloseDetails = () => {
     setOpenDetails(false);
   };

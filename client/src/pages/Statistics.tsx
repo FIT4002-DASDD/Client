@@ -1,3 +1,10 @@
+/**
+ * Statistics.tsx
+ * Statistics page
+ * @author Sara Tran
+ * @updated 2021-11-18
+ */
+
 import { Box, Grid, makeStyles, Paper, Typography } from "@material-ui/core";
 import React, { useEffect, useState, useContext } from "react";
 import "react-calendar/dist/Calendar.css";
@@ -60,7 +67,9 @@ const Statistics = () => {
    */
   const [adStatData, setAdStatData] = useState<any[]>([]);
 
+  // Retrieve statistics upon initial render or data source change
   useEffect(() => {
+    // Bot political alignment stats
     getBotAlignmentStats(source).then((res) => {
       if (!res || res.length === 0) {
         setBotPoliticalAlignmentData([]);
@@ -75,10 +84,8 @@ const Statistics = () => {
               ? politicalRankings[parseInt(element.label)]
               : element.label,
         }));
-        // TODO: type checking and avoid hard-coded values?
         switch (e.type) {
           case "political ranking":
-            // console.log(data);
             setBotPoliticalAlignmentData(data);
             break;
 
@@ -92,6 +99,7 @@ const Statistics = () => {
       }
     });
 
+    // Ad category stats
     getAdCategoryStats(source).then((res) => {
       if (!res) {
         setAdCategoryData([]);
@@ -104,6 +112,7 @@ const Statistics = () => {
       setAdCategoryData(data);
     });
 
+    // Ad count stats
     getAdStats(source).then((res) => {
       if (!res) return;
       const data =
@@ -152,6 +161,7 @@ const Statistics = () => {
       setAdStatData(data);
     });
 
+    // Stats for category correlation with bot properties (Google only)
     if (source === DataSource.Google) {
       getCategoryBotStats(source).then((res) => {
         if (!res) {
@@ -168,6 +178,7 @@ const Statistics = () => {
     }
   }, [source]);
 
+  // Update line chart for selected month
   useEffect(() => {
     getAdCountStats(source, selectedMonth.getTime()).then((res) => {
       if (!res) return;
@@ -180,37 +191,44 @@ const Statistics = () => {
     });
   }, [selectedMonth, source]);
 
+  // Handle selecting a month
   const onClickMonth = (value: Date) => {
     console.log(value);
     setSelectedMonth(value);
   };
+
+  // Political alignment pie chart
   const botPieChart1 = (
     <Paper className={classes.paper}>
       <PieChart
         data={botPoliticalAlignmentData}
-        title="Bot alignment by political beliefs"
+        title="Bot distribution by political alignment"
       />
     </Paper>
   );
 
+  // Bot gender pie chart
   const botPieChart2 = (
     <Paper className={classes.paper}>
-      <PieChart data={botGenderAlignmentData} title="Bot alignment by gender" />
+      <PieChart data={botGenderAlignmentData} title="Bot gender distribution" />
     </Paper>
   );
 
+  // Category tree map chart
   const categoryChart = (
     <Paper className={classes.paper}>
       <CategoryTreeMapChart data={adCategoryData} />
     </Paper>
   );
 
+  // Category bot correlation scatter plot
   const categoryBotChart = (
     <Paper className={classes.paper}>
       <CategoryBotStatsChart data={categoryBotData} />
     </Paper>
   );
 
+  // Ad scraping statistics
   const adsScrapedChart = (
     <Paper className={classes.paper}>
       <Grid container spacing={3}>

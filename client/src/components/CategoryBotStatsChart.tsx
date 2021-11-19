@@ -1,16 +1,16 @@
+/**
+ * CategoryBotStatsChart.tsx
+ * Chart to display correlation between categories and bot properties (political alignment, gender)
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import Chart from "react-apexcharts";
 import "./styles/CategoryBotStatsChart.css";
 
+// Chart config
 const options: ApexCharts.ApexOptions = {
   chart: {
-    events: {
-      dataPointSelection: (event, chartContext, config) => {
-        // console.log(config);
-        const { dataPointIndex } = config;
-        console.log(dataPointIndex);
-        // TODO: anything happens when clicking item in chart?
-      },
-    },
     zoom: {
       enabled: false,
     },
@@ -63,7 +63,6 @@ const options: ApexCharts.ApexOptions = {
       highlightDataSeries: true,
     },
   },
-
   tooltip: {
     custom: ({ seriesIndex, w }) => {
       let g = Math.round(w.globals.series[seriesIndex][0] * 1000) / 10;

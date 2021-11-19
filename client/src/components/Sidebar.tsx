@@ -1,3 +1,10 @@
+/**
+ * Sidebar.tsx
+ * Sidebar Menu
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import "./styles/Sidebar.css";
@@ -5,11 +12,13 @@ import logo from "../images/logo.png";
 import adsIcon from "../images/ads.png";
 import botsIcon from "../images/bots.png";
 import statisticsIcon from "../images/statistics.png";
+import settingsIcon from "../images/settings.png";
 import { Select, MenuItem } from "@material-ui/core";
 import { DataContext } from "../App";
 import { DataSource } from "../helpers/dataSourceEnum";
 import { withStyles } from "@material-ui/core/styles";
 
+// Items on sidebar
 const SidebarItems = [
   {
     name: "Ads",
@@ -26,8 +35,14 @@ const SidebarItems = [
     route: "/statistics",
     icon: statisticsIcon,
   },
+  {
+    name: "Settings",
+    route: "/settings",
+    icon: settingsIcon,
+  },
 ];
 
+// Styling for selected sidebar item
 const StyledSelect = withStyles({
   select: {
     color: "#a4a6b3",
@@ -35,10 +50,10 @@ const StyledSelect = withStyles({
     fontSize: 20,
   },
 })(Select);
-/**
- * Sidebar menu
- */
+
+// Sidebar menu
 const Sidebar = () => {
+  // Get current data source
   const dataSourceContext = useContext(DataContext);
 
   return (

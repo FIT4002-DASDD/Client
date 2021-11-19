@@ -1,3 +1,10 @@
+/**
+ * GoogleBotDetails.tsx
+ * Displays details for Google bots (used in the GoogleAdCard component)
+ * @author Thev Wickramasinghe
+ * @updated 2021-11-18
+ */
+
 import {
   Button,
   Dialog,
@@ -45,17 +52,26 @@ const GoogleBotDetails = (props: GoogleBotDetailsProps) => {
    * State for initialising the title for search terms
    */
   const [title, setTitle] = React.useState("");
-
+  /**
+   * Close the search terms popup dialog
+   */
   const handleCloseTerms = () => {
     setOpenTerms(false);
   };
 
+  // Check that bot exists
   if (!bot) {
     return <div />;
   }
 
+  // Convert political ranking to readable string
   let ranking: string = politicalRanking[bot.politicalRanking];
 
+  /**
+   * Display the terms (list items in the dialog)
+   * @param terms The search terms to display
+   * @param title The title of the dialog
+   */
   const displayTerms = (terms: string[], title: string) => {
     setTerms(terms);
     setTitle(title);

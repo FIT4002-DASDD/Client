@@ -1,3 +1,10 @@
+/**
+ * Ads.tsx
+ * Ads page
+ * @author Andy Zhan
+ * @updated 2021-11-18
+ */
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   Accordion,
@@ -349,6 +356,7 @@ const Ads = () => {
     politicalFilterState,
   ]);
 
+  // Handle page change
   const handleChange = (event: any, value: number) => {
     setPage(value);
   };
@@ -371,6 +379,7 @@ const Ads = () => {
     });
   }, [source]);
 
+  // Handle creation of new tag
   const handleOnNewTagCreated = () => {
     baseApi.get(`/${source}/tags`).then((res) => {
       setAllTags(res.data);
@@ -378,6 +387,7 @@ const Ads = () => {
     });
   };
 
+  // Detect Enter key (used for page number input)
   const enterKeyDown = (e: any) => {
     if (e.keyCode === 13) {
       if (
@@ -397,6 +407,7 @@ const Ads = () => {
     }
   };
 
+  // Placeholder AdCard skeletons for loading
   const LoadSkeleton = () => (
     <>
       {Array(3)
@@ -407,6 +418,11 @@ const Ads = () => {
     </>
   );
 
+  /**
+   * Handles changing the ad type filter
+   * @param event ChangeEvent object
+   * @param index Index of selected ad type
+   */
   const handleAdTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -418,6 +434,11 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Handles changing the bot type filter
+   * @param event ChangeEvent object
+   * @param index Index of selected bot type
+   */
   const handleBotTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -429,6 +450,11 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Handles changing the political alignment filter
+   * @param event ChangeEvent object
+   * @param index Index of selected political alignment
+   */
   const handlePoliticalFilterChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -440,10 +466,18 @@ const Ads = () => {
     );
   };
 
+  /**
+   * Select or deselect all political alignment filters
+   * @param toggle Whether to select or deselect all political alignment filters
+   */
   const handleAllPoliticalFilterChange = (toggle: boolean) => {
     setPoliticalFilterState((s) => s.map((e) => ({ ...e, checked: toggle })));
   };
 
+  /**
+   * Creates accordion items for filters
+   * @returns A list of accordion items for each filter
+   */
   const createFilterItems = () => [
     [
       <AccordionSummary
@@ -721,6 +755,7 @@ const Ads = () => {
     });
   };
 
+  // Right sidebar (drawer) component for filters
   const FilterDrawer = () => (
     <Drawer
       className={classes.drawer}
@@ -828,6 +863,31 @@ const Ads = () => {
             );
           })
         )}
+        <div
+          style={{
+            display: "inline-flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "100%",
+            paddingTop: 10,
+          }}
+        >
+          <TextField
+            label="Page #"
+            size="small"
+            style={{ width: 120 }}
+            variant="outlined"
+            onKeyDown={enterKeyDown}
+            error={errorBooleanForInput}
+            helperText={errorMessage}
+          />
+          <Pagination
+            count={pageNumber}
+            page={page}
+            onChange={handleChange}
+            size="large"
+          />
+        </div>
       </div>
       <FilterDrawer />
     </div>

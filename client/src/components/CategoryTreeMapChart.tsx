@@ -1,18 +1,15 @@
+/**
+ * CategoryTreeMapChart.tsx
+ * Category treemap chart to be displayed on Stats page
+ * @author Sara Tran
+ * @updated 2021-11-18
+ */
+
 import Chart from "react-apexcharts";
 
 const options: ApexCharts.ApexOptions = {
   legend: {
     show: false,
-  },
-  chart: {
-    events: {
-      dataPointSelection: (event, chartContext, config) => {
-        // console.log(config);
-        const { dataPointIndex } = config;
-        console.log(dataPointIndex);
-        // TODO: anything happens when clicking item in chart?
-      },
-    },
   },
   title: {
     text: "Categories",
